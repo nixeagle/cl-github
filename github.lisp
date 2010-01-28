@@ -13,7 +13,8 @@ This is the same for every call.")
 
 (pushnew (cons "application" "json") drakma:*text-content-types*)
 
-(defvar *prot* nil)
+(defvar *current-prototype* nil
+  "Stores the key of an object until its stored in `*PREVIOUS-PROTOTYPE*'.")
 (defvar *previous-prototype* nil
   "Stores the prototype of the json class above the current one.
 
@@ -36,19 +37,19 @@ When parsing the plan json object, this will be set to \"USER\".")
 
 (defun beginning-of-object ()
   "Do more at prototype init"
-  (setq *previous-prototype* *prot*) (setq *prot* nil)
+  (setq *previous-prototype* *current-prototype*) (setq *current-prototype* nil)
   (json::init-accumulator-and-prototype))
 
 (defun key-add-or-set (key)
   "Mark KEY a prototype if it is, and add it to the accumulator."
   (let ((key (funcall json::*json-identifier-name-to-lisp* key)))
     (print key)
-    (if (and (not *prot*)
+    (if (and (not *current-prototype*)
              (or (string= key "USER")
                  (string= key "PLAN")))
         (progn (setq json::*accumulator-last*
                      (setf (cdr json::*accumulator-last*) (cons (cons key nil) nil)))
-               (setq *prot* key)
+               (setq *current-prototype* key)
               #+ () (pushnew (cons "PROTOTYPE" key) (cddr json::*accumulator*))
                (set-prototype t))
         (setq json::*accumulator-last*
@@ -64,7 +65,7 @@ Otherwise, do the same as ACCUMULATOR-ADD-VALUE."
       (progn
         (check-type value (or json::prototype string)
                     (format nil "Invalid prototype: ~S." value))
-        (setq json::*prototype* *prot*)
+        (setq json::*prototype* *current-prototype*)
         json::*accumulator*)
       (json::accumulator-add-value value)))
 
