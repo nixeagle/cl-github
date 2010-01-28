@@ -40,9 +40,16 @@ When parsing the plan json object, this will be set to \"USER\".")
   (setq *previous-prototype* *current-prototype*) (setq *current-prototype* nil)
   (json::init-accumulator-and-prototype))
 
+(defun camel-case-to-lisp (string)
+  (declare (type string string))
+  (string-upcase (iter (for char :in-string string)
+                       (if (char= #\_ char)
+                           (collect #\- :result-type string)
+                           (collect char :result-type string)))))
+
 (defun key-add-or-set (key)
   "Mark KEY a prototype if it is, and add it to the accumulator."
-  (let ((key (funcall json::*json-identifier-name-to-lisp* key)))
+  (let ((key (funcall #'camel-case-to-lisp key)))
     (print key)
     (if (and (not *current-prototype*)
              (or (string= key "USER")
