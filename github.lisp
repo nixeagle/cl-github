@@ -13,6 +13,9 @@ This is the same for every call.")
 
 (pushnew (cons "application" "json") drakma:*text-content-types*)
 
+(defvar *prot* nil)
+(defvar *prot2* nil)
+
 (defun github-request (uri login token &rest parameters)
   "Ask github about URI using LOGIN and TOKEN."
   (declare (type string login token))
