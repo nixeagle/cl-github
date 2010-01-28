@@ -5,7 +5,7 @@
 
 (in-package :nisp.github)
 
-(defparameter +github-api-url+ "https://github.com/api/v2/"
+(defparameter +github-api-url+ "https://github.com/api/v2"
   ;; Use only the json interface, we do not want to implement the xml or
   ;; yaml interfaces.
   "Github api location.
@@ -29,7 +29,6 @@ When parsing the plan json object, this will be set to \"USER\".")
                        `(("login" . ,login)
                          ("token" . ,token)
                          ,@parameters)))
-
 
 (defun set-prototype (key)
   "Make KEY the json `*PROTOTYPE*'."
@@ -136,4 +135,15 @@ Otherwise, create a FLUID-OBJECT with slots interned in
 
 (defclass plan ()
   (name collaborators space private-repos))
+
+
+;;; utils
+(defun build-github-api-url (&rest parameters)
+  "Build a request url using PARAMETERS."
+  (reduce (lambda (prior new)
+            (concatenate 'string prior "/" new))
+          (cons +github-api-url+ parameters)))
+
+
+
 ;;; End file
