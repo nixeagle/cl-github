@@ -14,7 +14,11 @@ This is the same for every call.")
 (pushnew (cons "application" "json") drakma:*text-content-types*)
 
 (defvar *prot* nil)
-(defvar *prot2* nil)
+(defvar *previous-prototype* nil
+  "Stores the prototype of the json class above the current one.
+
+For example: {\"user\":{\"plan\":{\"name\":....}}}
+When parsing the plan json object, this will be set to \"USER\".")
 
 (defun github-request (uri login token &rest parameters)
   "Ask github about URI using LOGIN and TOKEN."
@@ -32,7 +36,7 @@ This is the same for every call.")
 
 (defun beginning-of-object ()
   "Do more at prototype init"
-  (setq *prot2* *prot*) (setq *prot* nil)
+  (setq *previous-prototype* *prot*) (setq *prot* nil)
   (json::init-accumulator-and-prototype))
 
 (defun key-add-or-set (key)
@@ -82,9 +86,9 @@ Otherwise, create a FLUID-OBJECT with slots interned in
          (intern-keys (bindings)
            (loop for (key . value) in bindings
               collect (cons (json:json-intern key) value))))
-    (if (typep *prot2* 'json::prototype)
+    (if (typep *previous-prototype* 'json::prototype)
         (with-slots (lisp-class lisp-superclasses lisp-package)
-            *prot2*
+            *previous-prototype*
           (let* ((package-name (as-symbol lisp-package))
                  (json:*json-symbols-package*
                   (if package-name
@@ -96,11 +100,11 @@ Otherwise, create a FLUID-OBJECT with slots interned in
             (json::maybe-add-prototype
              (json:make-object (intern-keys (cdr json::*accumulator*))
                           class superclasses)
-             *prot2*)))
+             *previous-prototype*)))
         (let ((bindings (intern-keys (cdr json::*accumulator*)))
-              (class (if (stringp *prot2*) (as-symbol *prot2*))))
-          (when (and *prot2* (not class))
-            (push (cons json::*prototype-name* *prot2*) bindings))
+              (class (if (stringp *previous-prototype*) (as-symbol *previous-prototype*))))
+          (when (and *previous-prototype* (not class))
+            (push (cons json::*prototype-name* *previous-prototype*) bindings))
           (print class)
           (json:make-object bindings class)))))
 
