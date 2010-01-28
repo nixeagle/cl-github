@@ -65,11 +65,8 @@ Otherwise, do the same as ACCUMULATOR-ADD-VALUE."
         (check-type value (or json::prototype string)
                     (format nil "Invalid prototype: ~S." value))
         (setq json::*prototype* *prot*)
-        (print "it!")
         json::*accumulator*)
-      (if nil #+ () *prot2*
-          (json::accumulator-add-value *prot2*)
-          (json::accumulator-add-value value))))
+      (json::accumulator-add-value value)))
 
 ;;; Modified from cl-json 
 (defun accumulator-get-object ()
