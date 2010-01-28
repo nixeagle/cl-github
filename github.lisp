@@ -62,4 +62,7 @@ Otherwise, do the same as ACCUMULATOR-ADD-VALUE."
           (json::accumulator-add-value *prot2*)
           (json::accumulator-add-value value))))
 
+;;; JSON classes
+(defclass user () ())
+
 ;;; End file
