@@ -26,4 +26,21 @@ This is the same for every call.")
   "Make KEY the json `*PROTOTYPE*'."
   (setq json::*prototype* key))
 
+(defun key-add-or-set (key)
+  "Mark KEY a prototype if it is, and add it to the accumulator."
+  (let ((key (funcall json::*json-identifier-name-to-lisp* key)))
+    (print key)
+    (if (and (not json::*prototype*)
+             (or (string= key "USER")
+                 (string= key "PLAN")))
+        (progn (setq json::*accumulator-last*
+                     (setf (cdr json::*accumulator-last*) (cons (cons key nil) nil)))
+               (setq *prot* key)
+              #+ () (pushnew (cons "PROTOTYPE" key) (cddr json::*accumulator*))
+               (set-prototype t))
+        (setq json::*accumulator-last*
+              (setf (cdr json::*accumulator-last*) (cons (cons key nil) nil))))
+    json::*accumulator*))
+
+
 ;;; End file
