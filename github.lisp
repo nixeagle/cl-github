@@ -62,6 +62,43 @@ Otherwise, do the same as ACCUMULATOR-ADD-VALUE."
           (json::accumulator-add-value *prot2*)
           (json::accumulator-add-value value))))
 
+;;; Modified from cl-json 
+(defun accumulator-get-object ()
+  "Return a CLOS object, using keys and values accumulated so far in
+the list accumulator as slot names and values, respectively.  If the
+JSON Object had a prototype field infer the class of the object and
+the package wherein to intern slot names from the prototype.
+Otherwise, create a FLUID-OBJECT with slots interned in
+*JSON-SYMBOLS-PACKAGE*."
+  (flet ((as-symbol (value)
+           (etypecase value
+             (string (intern value))
+             (symbol value)))
+         (intern-keys (bindings)
+           (loop for (key . value) in bindings
+              collect (cons (json:json-intern key) value))))
+    (if (typep *prot2* 'json::prototype)
+        (with-slots (lisp-class lisp-superclasses lisp-package)
+            *prot2*
+          (let* ((package-name (as-symbol lisp-package))
+                 (json:*json-symbols-package*
+                  (if package-name
+                      (or (find-package package-name)
+                          (error 'package-error :package package-name))
+                      json::*json-symbols-package*))
+                 (class (as-symbol lisp-class))
+                 (superclasses (mapcar #'as-symbol lisp-superclasses)))
+            (json::maybe-add-prototype
+             (json:make-object (intern-keys (cdr json::*accumulator*))
+                          class superclasses)
+             *prot2*)))
+        (let ((bindings (intern-keys (cdr json::*accumulator*)))
+              (class (if (stringp *prot2*) (as-symbol *prot2*))))
+          (when (and *prot2* (not class))
+            (push (cons json::*prototype-name* *prot2*) bindings))
+          (print class)
+          (json:make-object bindings class)))))
+
 ;;; JSON classes
 (defclass user () ())
 
