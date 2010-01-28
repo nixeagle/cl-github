@@ -43,4 +43,19 @@ This is the same for every call.")
     json::*accumulator*))
 
 
+(defun value-add-or-set (value)
+  "If VALUE (in a JSON Object being decoded) corresponds to a key which
+matches *PROTOTYPE-NAME*, set VALUE to be the prototype of the Object.
+Otherwise, do the same as ACCUMULATOR-ADD-VALUE."
+  (if (eql json::*prototype* t)
+      (progn
+        (check-type value (or json::prototype string)
+                    (format nil "Invalid prototype: ~S." value))
+        (setq json::*prototype* *prot*)
+        (print "it!")
+        json::*accumulator*)
+      (if nil #+ () *prot2*
+          (json::accumulator-add-value *prot2*)
+          (json::accumulator-add-value value))))
+
 ;;; End file
