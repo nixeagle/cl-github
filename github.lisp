@@ -106,19 +106,17 @@ Otherwise, create a FLUID-OBJECT with slots interned in
           (print class)
           (json:make-object bindings class)))))
 
-(defun set-decoder-github-clos-semantics ()
-  "Decode to clos classes based on the parent's key for the class."
-  ;; Need better description...
-  (set-custom-vars
-   :beginning-of-object #'beginning-of-object 
-   :object-key #'key-add-or-set 
-   :object-value #'value-add-or-set
-   :end-of-object #'accumulator-get-object 
-   :object-scope '(json:*INTERNAL-DECODER*
-                   json::*prototype*
-                   json::*json-array-type*
-                   *current-prototype*
-                   *previous-prototype*)))
+(defmacro with-github-decoder (&body body)
+  "Execute BODY with decoder bindings appropriate for github's api."
+  `(json:bind-custom-vars
+      (:beginning-of-object #'beginning-of-object 
+                            :object-key #'key-add-or-set 
+                            :object-value #'value-add-or-set
+                            :end-of-object #'accumulator-get-object 
+                            :object-scope '(json:*INTERNAL-DECODER*
+                                            *current-prototype*
+                                            *previous-prototype*))
+     ,@body))
 
 ;;; JSON classes
 (defclass user () ())
