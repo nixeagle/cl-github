@@ -22,4 +22,8 @@ This is the same for every call.")
                          ,@parameters)))
 
 
+(defun set-prototype (key)
+  "Make KEY the json `*PROTOTYPE*'."
+  (setq json::*prototype* key))
+
 ;;; End file
