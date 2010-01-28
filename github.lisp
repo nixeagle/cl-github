@@ -126,6 +126,14 @@ Otherwise, create a FLUID-OBJECT with slots interned in
      ,@body))
 
 ;;; JSON classes
-(defclass user () ())
-(defclass plan () ())
+(defclass user ()
+  (plan gravatar-id name company location created-at
+        collaborators disk-usage
+        public-gist-count public-repo-count
+        blog following-count id private-gist-count
+        owned-private-repo-count total-private-repo-count
+        followers-count login email))
+
+(defclass plan ()
+  (name collaborators space private-repos))
 ;;; End file
