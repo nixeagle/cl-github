@@ -39,7 +39,7 @@ This is the same for every call.")
   "Mark KEY a prototype if it is, and add it to the accumulator."
   (let ((key (funcall json::*json-identifier-name-to-lisp* key)))
     (print key)
-    (if (and (not json::*prototype*)
+    (if (and (not *prot*)
              (or (string= key "USER")
                  (string= key "PLAN")))
         (progn (setq json::*accumulator-last*
@@ -106,5 +106,5 @@ Otherwise, create a FLUID-OBJECT with slots interned in
 
 ;;; JSON classes
 (defclass user () ())
-
+(defclass plan () ())
 ;;; End file
