@@ -12,3 +12,14 @@
 This is the same for every call.")
 
 
+(defun github-request (uri login token &rest parameters)
+  "Ask github about URI using LOGIN and TOKEN."
+  (declare (type string login token))
+  (drakma:http-request uri :method :post
+                       :parameters
+                       `(("login" . ,login)
+                         ("token" . ,token)
+                         ,@parameters)))
+
+
+;;; End file
