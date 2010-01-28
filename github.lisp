@@ -30,6 +30,11 @@ This is the same for every call.")
   "Make KEY the json `*PROTOTYPE*'."
   (setq json::*prototype* key))
 
+(defun beginning-of-object ()
+  "Do more at prototype init"
+  (setq *prot2* *prot*) (setq *prot* nil)
+  (json::init-accumulator-and-prototype))
+
 (defun key-add-or-set (key)
   "Mark KEY a prototype if it is, and add it to the accumulator."
   (let ((key (funcall json::*json-identifier-name-to-lisp* key)))
