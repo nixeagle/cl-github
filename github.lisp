@@ -11,6 +11,7 @@
   "Github api location.
 This is the same for every call.")
 
+(pushnew (cons "application" "json") drakma:*text-content-types*)
 
 (defun github-request (uri login token &rest parameters)
   "Ask github about URI using LOGIN and TOKEN."
