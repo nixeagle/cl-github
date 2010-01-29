@@ -241,6 +241,10 @@ slots."))
   ((languages :reader languages))
   (:documentation "List of languages."))
 
+(defclass tags ()
+  ((tags :reader tags))
+  (:documentation "List of tags on a repository."))
+
 ;;; utils
 (defun build-github-api-url (&rest parameters)
   "Build a request url using PARAMETERS."
@@ -455,5 +459,11 @@ These are basically read only ssh keys."
   (declare (type string username repository))
   (json->class (github-request "repos" "show" username repository "languages")
                'languages))
+
+(defun show-tags (username repository)
+  "List REPOSITORY's tags."
+  (declare (type string username repository))
+  (json->class (github-request "repos" "show" username repository "tags")
+               'tags))
 
 ;;; End file
