@@ -151,6 +151,26 @@ Otherwise, create a FLUID-OBJECT with slots interned in
            (json:decode-json obj))
     (close obj)))
 
+(defgeneric json->class (object class)
+  (:documentation "Store json in OBJECT to CLASS"))
+
+(defmethod json->class ((object stream)
+                        (class symbol))
+  "Store json from STREAM in an instance of CLASS."
+  (make-object (with-decoder-simple-list-semantics
+                 (decode-json object))
+               class))
+
+(defmethod json->class :around (object class)
+  "Set package to nisp.github and use local class registry."
+  (let ((json:*json-symbols-package* :nisp.github))
+    (with-local-class-registry (:inherit nil)
+      (call-next-method))))
+
+(defmethod json->class :after ((object stream) class)
+  "Close STREAM after we are done with it."
+  (close object))
+
 ;;; JSON classes
 (defclass user ()
   (plan gravatar-id name company location created-at
