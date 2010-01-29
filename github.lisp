@@ -185,4 +185,11 @@ Otherwise, create a FLUID-OBJECT with slots interned in
 (defun show-user (user)
   (slot-value (to-json (github-request "user" "show" user)) 'user))
 
+(defun search-users (username)
+  "Search github for USERNAME."
+  (declare (type string username))
+  (with-local-class-registry (:inherit nil)
+    (slot-value (to-json (github-request "user" "search" username))
+                'users)))
+
 ;;; End file
