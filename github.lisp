@@ -428,10 +428,13 @@ These are basically read only ssh keys."))
               'repository))
 
 (defmethod create-repository ((repository string) &key login token
-                          description homepage
-                          ;; Default to public.
-                          (public 1))
-  (not-done repository description homepage public login token))
+                              description homepage public)
+  (slot-value (to-json (authed-request login token '("repos" "create")
+                            :name repository
+                            :description description
+                            :homepage homepage
+                            :public public))
+              'repository))
 
 (defmethod delete-repository ((repository string) &key login token)
   (let ((delete-token (json->class (authed-request login token
@@ -443,10 +446,14 @@ These are basically read only ssh keys."))
                  'status)))
 
 (defmethod set-repository-private ((repository string) &key login token)
-  (not-done repository login token))
+  (slot-value (to-json (authed-request login token
+                                       `("repos" "set" "private" ,repository)))
+              'repository))
 
 (defmethod set-repository-public ((repository string) &key login token)
-  (not-done repository login token))
+  (slot-value (to-json (authed-request login token
+                                       `("repos" "set" "public" ,repository)))
+              'repository))
 
 (defmethod deploy-keys ((repository string) &key login token)
   (slot-value (to-json (authed-request login token `("repos" "keys" ,repository)))
