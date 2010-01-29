@@ -210,6 +210,12 @@ Otherwise, create a FLUID-OBJECT with slots interned in
 (defun show-user (user)
   (slot-value (to-json (github-request "user" "show" user)) 'user))
 
+(defun show-followers (username)
+  "List all followers of USERNAME."
+  (declare (type string username))
+  (json->class (github-request "user" "show" username "followers")
+               'followers))
+
 (defun search-users (username)
   "Search github for USERNAME."
   (declare (type string username))
