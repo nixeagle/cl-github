@@ -37,6 +37,7 @@ When parsing the plan json object, this will be set to \"USER\".")
   (with-github-content-types
     (drakma:http-request (apply #'build-github-api-url parameters)
                          :method :post
+                         :want-stream t
                          :parameters
                          `(,(and login `("login" . ,login))
                             ,(and token `("token" . ,token))))))
