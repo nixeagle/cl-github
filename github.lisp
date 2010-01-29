@@ -43,7 +43,7 @@ When parsing the plan json object, this will be set to \"USER\".")
 
 (defun github-request (&rest args
                        &key login token auth base-url
-                       parameters method &allow-other-keys)
+                       parameters method want-string &allow-other-keys)
   (let ((login (or login (and (member auth '(:default :force)) *default-login*)))
         (token (or token (and (member auth '(:default :force)) *default-token*)))
         (base-url (or base-url (if (and login token)
@@ -57,7 +57,7 @@ When parsing the plan json object, this will be set to \"USER\".")
                                   base-url parameters)
                            :method (or method (if (and login token) :post :get))
                            :REDIRECT t
-                           :want-stream t
+                           :want-stream (if want-string nil t)
                            :parameters
                            (apply #'build-parameters :login login :token token
                                   args)))))
@@ -93,7 +93,8 @@ When parsing the plan json object, this will be set to \"USER\".")
           (print key)
           (when (and value (not (eq :parameters key))
                      (not (eq :auth key))
-                     (not (eq :method key)))
+                     (not (eq :method key))
+                     (not (eq :want-string key)))
             (collect (cons (dash-to-underscore
                             (string-downcase (symbol-name key))) value))))))
 
