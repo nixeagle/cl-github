@@ -367,18 +367,12 @@ slots."))
   (json->class (github-simple-request "user" "show" username "following")
                'following))
 
-(defun follow-user (username &key login token)
+(defun follow (username &key login token)
   "Follow USERNAME using USER-LOGIN."
   (declare (type string username))
   (json->class (github-authed-request :login login :token token
                                       :parameters `("user" "follow" ,username))
                'following))
-
-(defun follow (user-login pass &rest usernames)
-  "Follow USERNAMES using USER-LOGIN."
-  (declare (type string user-login pass))
-  ;; Should be written in terms of FOLLOW-USER.
-  (not-done user-login pass usernames))
 
 (defun unfollow-user (user-login pass username)
   "Unfollow USERNAME using USER-LOGIN."
