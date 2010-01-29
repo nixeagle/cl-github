@@ -278,7 +278,9 @@ slots."))
 (defun build-github-api-url (&rest parameters)
   "Build a request url using PARAMETERS."
   (reduce (lambda (prior new)
-            (concatenate 'string prior "/" (url-encode new)))
+            (if new
+                (concatenate 'string prior "/" (url-encode new))
+                prior))
           (cons +github-api-url+ parameters)))
 
 (defmethod make-object :before (bindings
@@ -501,11 +503,11 @@ These are basically read only ssh keys."
   (json->class (github-request "repos" "show" username repository "branches")
                'branches))
 
-(defun show-commits (username repository branch)
-  "List commits in USERNAME's REPOSITORY on the given BRANCH."
+(defun show-commits (username repository branch &optional file)
+  "List commits in USERNAME's REPOSITORY on BRANCH optionally for FILE."
   (declare (type string username repository branch))
   (slot-value
-   (to-json (github-request "commits" "list" username repository branch))
+   (to-json (github-request "commits" "list" username repository branch file))
    'commits))
 
 ;;; End file
