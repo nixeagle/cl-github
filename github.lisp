@@ -58,6 +58,14 @@ When parsing the plan json object, this will be set to \"USER\".")
                          `(,(and login `("login" . ,login))
                             ,(and token `("token" . ,token))))))
 
+(defun build-parameters (&rest args &key &allow-other-keys)
+  "Convert ARGS to an alist of parameters."
+  (iter (generate arg in args)
+        (let ((key (next arg))
+              (value (next arg)))
+          (when value
+            (collect (cons (symbol-name key) value))))))
+
 (defun set-prototype (key)
   "Make KEY the json `*PROTOTYPE*'."
   (setq json::*prototype* key))
