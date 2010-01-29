@@ -33,38 +33,41 @@ When parsing the plan json object, this will be set to \"USER\".")
                                         ("text" . nil))))
      ,@body))
 
-(defun github-request (&rest parameters)
-  "Ask github about PARAMETERS."
-  (with-github-content-types
-    (drakma:http-request (apply #'build-github-api-url +github-api-url+ parameters)
-                         :want-stream t)))
-
 (defun github-request->alist (&rest parameters)
   "Ask github about PARAMETERS and return them as an alist."
-  (let ((result (apply #'github-request parameters)))
+  (let ((result (apply #'github-simple-request parameters)))
     (prog1 (with-decoder-simple-list-semantics
              (let ((json:*json-symbols-package* :nisp.github))
                (decode-json result))) 
       (close result))))
 
-(defun github-authed-request (&rest args
+(defun github-request (&rest args
                               &key login token parameters &allow-other-keys)
-  (declare (ignore args))
   (with-github-content-types
-    (drakma:http-request (apply #'build-github-api-url parameters)
-                         :method :post
+    (drakma:http-request (apply #'build-github-api-url
+                                (if (and login token)
+                                    +github-ssl-api-url+
+                                    +github-api-url+) parameters)
+                         :method (if (and login token) :post :get)
+                         :REDIRECT t
                          :want-stream t
                          :parameters
-                         `(,(and login `("login" . ,login))
-                            ,(and token `("token" . ,token))))))
+                         (apply #'build-parameters :login login :token token
+                                args))))
 
-(defun build-parameters (&rest args &key &allow-other-keys)
+(defun github-simple-request (&rest parameters)
+  "Ask github about PARAMETERS."
+  (github-request :parameters parameters))
+
+(defun build-parameters (&rest args &key parameters &allow-other-keys)
   "Convert ARGS to an alist of parameters."
+  (declare (ignore parameters))
   (iter (generate arg in args)
         (let ((key (next arg))
               (value (next arg)))
-          (when value
-            (collect (cons (symbol-name key) value))))))
+          (print key)
+          (when (and value (not (eq :parameters key)))
+            (collect (cons (string-downcase (symbol-name key)) value))))))
 
 (defun set-prototype (key)
   "Make KEY the json `*PROTOTYPE*'."
