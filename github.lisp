@@ -76,6 +76,13 @@ When parsing the plan json object, this will be set to \"USER\".")
   "Ask github about PARAMETERS."
   (github-request :parameters parameters))
 
+(defun dash-to-underscore (string)
+  "Change all instances of - to _ in STRING."
+  (iter (for s :in-string string)
+        (if (char= #\- s)
+            (collect #\_ :result-type string)
+            (collect s :result-type string))))
+
 (defun build-parameters (&rest args &key parameters &allow-other-keys)
   "Convert ARGS to an alist of parameters."
   (declare (ignore parameters))
@@ -85,7 +92,8 @@ When parsing the plan json object, this will be set to \"USER\".")
           (print key)
           (when (and value (not (eq :parameters key))
                      (not (eq :auth key)))
-            (collect (cons (string-downcase (symbol-name key)) value))))))
+            (collect (cons (dash-to-underscore
+                            (string-downcase (symbol-name key))) value))))))
 
 ;;; JSON classes
 (defclass user ()
