@@ -228,7 +228,7 @@ slots."))
 (defun build-github-api-url (&rest parameters)
   "Build a request url using PARAMETERS."
   (reduce (lambda (prior new)
-            (concatenate 'string prior "/" new))
+            (concatenate 'string prior "/" (url-encode new)))
           (cons +github-api-url+ parameters)))
 
 (defmethod make-object :before (bindings
