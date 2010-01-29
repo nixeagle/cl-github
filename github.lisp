@@ -73,6 +73,7 @@ When parsing the plan json object, this will be set to \"USER\".")
     (if (and (not *current-prototype*)
              (or (string= key "USER")
                  (string= key "PLAN")
+                 (string= key "REPOSITORY")
                  (string= key "REPOSITORIES")
                  (string= key "USERS")))
         (progn (setq json::*accumulator-last*
@@ -204,6 +205,9 @@ Otherwise, create a FLUID-OBJECT with slots interned in
   (users)
   (:documentation "List of users someone follows."))
 
+(defclass repository ()
+  (description forks url homepage watchers fork open-issues private name owner))
+
 (defclass watched-repository () 
   (description forks url homepage watchers fork open-issues
                private name owner)
@@ -326,5 +330,10 @@ slots."))
   (slot-value (to-json (github-request "repos" "search" search-string))
               'repositories))
 
+(defun show-repository (username reponame)
+  "Show information on USERNAME's REPONAME."
+  (declare (type string username reponame))
+  (slot-value (to-json (github-request "repos" "show" username reponame))
+              'repository))
 
 ;;; End file
