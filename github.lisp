@@ -168,6 +168,8 @@ Otherwise, create a FLUID-OBJECT with slots interned in
             (concatenate 'string prior "/" new))
           (cons +github-api-url+ parameters)))
 
-
+;;; API calls
+(defun show-user (user)
+  (slot-value (to-json (github-request "user" "show" user)) 'user))
 
 ;;; End file
