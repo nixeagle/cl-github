@@ -74,6 +74,8 @@ When parsing the plan json object, this will be set to \"USER\".")
                  (string= key "PLAN")
                  (string= key "AUTHOR")
                  (string= key "PARENTS")
+                 (string= key "COMMIT")
+                 (string= key "MODIFIED")
                  (string= key "COMMITTER")
                  (string= key "COMMITS")
                  (string= key "REPOSITORY")
@@ -273,6 +275,14 @@ slots."))
           id message parents tree url)
   (:documentation "A commit object."))
 
+(defclass commit ()
+  (added modified removed parents author url id committed-date
+         authored-date message tree committer)
+  (:documentation "Detailed information on a commit."))
+
+(defclass modified ()
+  (diff filename)
+  (:documentation "Modification information for a commit."))
 
 ;;; utils
 (defun build-github-api-url (&rest parameters)
@@ -509,5 +519,11 @@ These are basically read only ssh keys."
   (slot-value
    (to-json (github-request "commits" "list" username repository branch file))
    'commits))
+
+(defun show-commit (username repository sha)
+  "Show data for commit identified by SHA on USERNAME's REPOSITORY."
+  (declare (type string username repository sha))
+  (slot-value (to-json (github-request "commits" "show" username repository sha))
+              'commit))
 
 ;;; End file
