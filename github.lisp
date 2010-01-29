@@ -204,7 +204,7 @@ Otherwise, create a FLUID-OBJECT with slots interned in
   (users)
   (:documentation "List of users someone follows."))
 
-(defclass repositories ()
+(defclass watched-repository () 
   (description forks url homepage watchers fork open-issues
                private name owner)
   ;; currently used only for WATCHED-REPOSITORIES.
@@ -214,6 +214,15 @@ Otherwise, create a FLUID-OBJECT with slots interned in
   (name size followers username language fork id type pushed
         forks description score created)
   (:documentation "Search repository result information."))
+
+(defclass repositories (watched-repository searched-repository) ()
+  (:documentation "Workaround for cl-json.
+
+Basically objects with a key named REPOSITORIES have different values
+depending on what action is being done with github. For now we use an
+abstract class that inherits all the conflicting classes so that at all
+times the result object at least makes sense and has no missing
+slots."))
 
 ;;; utils
 (defun build-github-api-url (&rest parameters)
