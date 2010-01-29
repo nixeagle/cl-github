@@ -505,34 +505,34 @@ ID can be either a string or a positive number."
   (declare (type string repository))
   (not-done repository login token))
 
-(defun set-repository-private (repository)
+(defun set-repository-private (repository &key login token)
   "Mark REPOSITORY as private on github."
   (declare (type string repository))
-  (not-done repository))
+  (not-done repository login token))
 
-(defun set-repository-public (repository)
+(defun set-repository-public (repository &key login token)
   "Mark REPOSITORY as public on github."
   (declare (type string repository))
-  (not-done repository))
+  (not-done repository login token))
 
-(defun deply-keys (repository)
+(defun deply-keys (repository &key login token)
   "List REPOSITORY's deploy keys.
 
 These are basically read only ssh keys."
   ;; Thanks charlie.
   (declare (type string repository))
-  (not-done repository))
+  (not-done repository login token))
 
-(defun add-deploy-key (repository &key title key)
+(defun add-deploy-key (repository &key title key login token)
   "Add KEY named TITLE as a deploy key for REPOSITORY."
   (declare (type string repository title key))
-  (not-done repository title key))
+  (not-done repository title key login token))
 
-(defun remove-deploy-key (repository &key id)
+(defun remove-deploy-key (repository &key id login token)
   "Remove key identified by ID as a deploy key for REPOSITORY."
   (declare (type string repository)
            (type fixnum id))
-  (not-done repository id))
+  (not-done repository id login token))
 
 (defun collaborators (username repository)
   "List collaborators on REPOSITORY owned by USERNAME."
@@ -540,15 +540,15 @@ These are basically read only ssh keys."
   (json->class (github-request "repos" "show" username repository "collaborators")
                'collaborators))
 
-(defun add-collaborator (username repository)
+(defun add-collaborator (username repository &key login token)
   "Add USERNAME to the collaborators list of REPOSITORY."
   (declare (type string username repository))
-  (not-done username repository))
+  (not-done username repository login token))
 
-(defun remove-collaborator (username repository)
+(defun remove-collaborator (username repository &key login token)
   "Remove USERNAME from the collaborators list of REPOSITORY."
   (declare (type string username repository))
-  (not-done username repository))
+  (not-done username repository login token))
 
 (defun show-network (username repository)
   "Show at network of USERNAME's REPOSITORY."
