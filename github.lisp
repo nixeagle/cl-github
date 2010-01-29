@@ -75,6 +75,7 @@ When parsing the plan json object, this will be set to \"USER\".")
                  (string= key "PLAN")
                  (string= key "REPOSITORY")
                  (string= key "REPOSITORIES")
+                 (string= key "NETWORK")
                  (string= key "USERS")))
         (progn (setq json::*accumulator-last*
                      (setf (cdr json::*accumulator-last*) (cons (cons key nil) nil)))
@@ -232,7 +233,9 @@ slots."))
   (collaborators)
   (:documentation "List of collaborators."))
 
-
+(defclass network (repositories)
+  ()
+  (:documentation "A network is just another name for repositories."))
 ;;; utils
 (defun build-github-api-url (&rest parameters)
   "Build a request url using PARAMETERS."
@@ -435,5 +438,11 @@ These are basically read only ssh keys."
   "Remove USERNAME from the collaborators list of REPOSITORY."
   (declare (type string username repository))
   (not-done username repository))
+
+(defun repository-network (username repository)
+  "Look at network of USERNAME's REPOSITORY."
+  (slot-value
+   (to-json (github-request "repos" "show" username repository "network"))
+   'network))
 
 ;;; End file
