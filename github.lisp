@@ -108,7 +108,11 @@ When parsing the plan json object, this will be set to \"USER\".")
 (defclass plan ()
   (name collaborators space private-repos))
 
-(defclass users ()
+(defclass network-meta-user ()
+  (name repo heads)
+  (:documentation "User object returned from github's Network API."))
+
+(defclass users (network-meta-user)
   (name location followers username language fullname
         repos id type pushed score created)
   (:documentation "Describes a github user search result."))
