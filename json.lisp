@@ -24,6 +24,7 @@
                  (string= key "MODIFIED")
                  (string= key "COMMITTER")
                  (string= key "DELETE-TOKEN")
+                 (string= key "TREE")
                  (string= key "COMMITS")
                  (string= key "REPOSITORY")
                  (string= key "PUBLIC-KEYS")

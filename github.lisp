@@ -204,6 +204,10 @@ slots."))
   (status)
   (:documentation "Result status from github api"))
 
+(defclass tree ()
+  (name sha mode type) 
+  (:documentation "Treeish git object that we get from github."))
+
 ;;; utils
 (defun build-github-api-url (&rest parameters)
   "Build a request url using PARAMETERS."
@@ -524,5 +528,14 @@ These are basically read only ssh keys."))
   (slot-value (to-json (request login token `("commits" "show" ,username
                                                                ,repository ,sha)))
               'commit))
+
+;;; Object API
+(defgeneric show-tree (username repository tree &key login token)
+  (:documentation "List treeish objects for USERNAME's REPOSITORY at TREE."))
+(defmethod show-tree ((username string) (repository string)
+                      (tree string) &key login token)
+  (slot-value (to-json (request login token `("tree" "show" ,username
+                                                     ,repository ,tree)))
+              'tree))
 
 ;;; End file
