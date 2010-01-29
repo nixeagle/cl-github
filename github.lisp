@@ -245,6 +245,10 @@ slots."))
   ((tags :reader tags))
   (:documentation "List of tags on a repository."))
 
+(defclass branches ()
+  ((branches :reader branches))
+  (:documentation "List of branches on a repository."))
+
 ;;; utils
 (defun build-github-api-url (&rest parameters)
   "Build a request url using PARAMETERS."
@@ -465,5 +469,11 @@ These are basically read only ssh keys."
   (declare (type string username repository))
   (json->class (github-request "repos" "show" username repository "tags")
                'tags))
+
+(defun show-branches (username repository)
+  "List REPOSITORY's remote branches."
+  (declare (type string username repository))
+  (json->class (github-request "repos" "show" username repository "branches")
+               'branches))
 
 ;;; End file
