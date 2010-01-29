@@ -21,6 +21,12 @@ This is the same for every call.")
 For example: {\"user\":{\"plan\":{\"name\":....}}}
 When parsing the plan json object, this will be set to \"USER\".")
 
+(defmacro with-github-content-types (&body body)
+  "Evaluate BODY treating application/json as text."
+  `(let ((drakma:*text-content-types* '(("application" . "json")
+                                        ("text" . nil))))
+     ,@body))
+
 (defun github-request (&rest parameters)
   "Ask github about PARAMETERS."
   (with-github-content-types
@@ -34,12 +40,6 @@ When parsing the plan json object, this will be set to \"USER\".")
              (let ((json:*json-symbols-package* :nisp.github))
                (decode-json result))) 
       (close result))))
-
-(defmacro with-github-content-types (&body body)
-  "Evaluate BODY treating application/json as text."
-  `(let ((drakma:*text-content-types* '(("application" . "json")
-                                        ("text" . nil))))
-     ,@body))
 
 (defun github-authed-request (login token &rest parameters)
   (with-github-content-types
