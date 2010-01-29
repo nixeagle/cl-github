@@ -13,8 +13,11 @@
                 :cxml-stp
                 :closure-html
                 :drakma
+                :flexi-streams
                 :cl-json
                 :nisp.util)
   :serial t
   :components
-  ((:file "github")))
+  ((:file "package")
+   (:file "url-utils")
+   (:file "github")))
