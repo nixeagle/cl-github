@@ -196,6 +196,14 @@ slots."))
   (title id key)
   (:documentation "Information on a public key."))
 
+(defclass delete-token ()
+  ((delete-token :reader delete-token))
+  (:documentation "Token github gives us to confirm deletion."))
+
+(defclass status ()
+  (status)
+  (:documentation "Result status from github api"))
+
 ;;; utils
 (defun build-github-api-url (&rest parameters)
   "Build a request url using PARAMETERS."
@@ -426,7 +434,13 @@ These are basically read only ssh keys."))
   (not-done repository description homepage public login token))
 
 (defmethod delete-repository ((repository string) &key login token)
-  (not-done repository login token))
+  (let ((delete-token (json->class (authed-request login token
+                                                   `("repos" "delete" ,repository))
+                                    'delete-token)))
+    (json->class (authed-request login token
+                                 `("repos" "delete" ,repository)
+                                 :delete-token (delete-token delete-token))
+                 'status)))
 
 (defmethod set-repository-private ((repository string) &key login token)
   (not-done repository login token))
