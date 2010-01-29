@@ -233,10 +233,23 @@ Otherwise, create a FLUID-OBJECT with slots interned in
   (json->class (github-request "user" "show" username "following")
                'following))
 
+(defun follow-user (user-login pass username)
+  "Follow USERNAME using USER-LOGIN."
+  (declare (type string user-login pass username))
+  (error "Not done!"))
+
+(defun follow (user-login pass &rest usernames)
+  "Follow USERNAMES using USER-LOGIN."
+  (declare (type string user-login pass))
+  ;; Should be written in terms of FOLLOW-USER.
+  (error "Not done!"))
+
 (defun search-users (username)
   "Search github for USERNAME."
   (declare (type string username))
   (slot-value (to-json (github-request "user" "search" username))
               'users))
+
+
 
 ;;; End file
