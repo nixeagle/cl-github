@@ -73,6 +73,7 @@ When parsing the plan json object, this will be set to \"USER\".")
     (if (and (not *current-prototype*)
              (or (string= key "USER")
                  (string= key "PLAN")
+                 (string= key "REPOSITORIES")
                  (string= key "USERS")))
         (progn (setq json::*accumulator-last*
                      (setf (cdr json::*accumulator-last*) (cons (cons key nil) nil)))
@@ -203,6 +204,13 @@ Otherwise, create a FLUID-OBJECT with slots interned in
   (users)
   (:documentation "List of users someone follows."))
 
+(defclass repositories ()
+  (description forks url homepage watchers fork open-issues
+               private name owner)
+  ;; currently used only for WATCHED-REPOSITORIES.
+  (:documentation "Repository information."))
+
+
 ;;; utils
 (defun build-github-api-url (&rest parameters)
   "Build a request url using PARAMETERS."
@@ -253,6 +261,13 @@ Otherwise, create a FLUID-OBJECT with slots interned in
   "Unfollow USERNAMES using USER-LOGIN."
   (declare (type string user-login pass))
   (error "Not done!"))
+
+(defun watched-repositories (username)
+  "List repositories USERNAME watches."
+  ;; Not 100% sure I like these named REPOSITORIES.
+  (slot-value
+   (to-json (github-request "repos" "watched" username))
+   'repositories))
 
 (defun search-users (username)
   "Search github for USERNAME."
