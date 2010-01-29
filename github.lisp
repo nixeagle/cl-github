@@ -47,33 +47,35 @@ When parsing the plan json object, this will be set to \"USER\".")
       (close result))))
 
 (defun github-request (&rest args
-                       &key (login *default-login*)
-                       (token *default-token*)
+                       &key login token 
                        parameters &allow-other-keys)
-  (with-github-content-types
-    (drakma:http-request (apply #'build-github-api-url
-                                (if (and login token)
-                                    +github-ssl-api-url+
-                                    +github-api-url+) parameters)
-                         :method (if (and login token) :post :get)
-                         :REDIRECT t
-                         :want-stream t
-                         :parameters
-                         (apply #'build-parameters :login login :token token
-                                args))))
+  (let ((login (or login *default-login*))
+        (token (or token *default-token*)))
+    (with-github-content-types
+      (drakma:http-request (apply #'build-github-api-url
+                                  (if (and login token)
+                                      +github-ssl-api-url+
+                                      +github-api-url+) parameters)
+                           :method (if (and login token) :post :get)
+                           :REDIRECT t
+                           :want-stream t
+                           :parameters
+                           (apply #'build-parameters :login login :token token
+                                  args)))))
 
 (defun github-simple-request (&rest parameters)
   "Ask github about PARAMETERS."
   (github-request :parameters parameters))
 
 (defun github-authed-request (&rest args
-                              &key (login *default-login*)
-                              (token *default-token*)
+                              &key login token 
                               parameters &allow-other-keys)
-  (check-type login string)
-  (check-type token string)
-  (apply #'github-authed-request :login login :token token
-         :parameters parameters args))
+  (let ((login (or login *default-login*))
+        (token (or token *default-token*)))
+    (check-type login string)
+    (check-type token string)
+    (apply #'github-authed-request :login login :token token
+           :parameters parameters args)))
 
 (defun build-parameters (&rest args &key parameters &allow-other-keys)
   "Convert ARGS to an alist of parameters."
