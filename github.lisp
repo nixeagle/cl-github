@@ -180,7 +180,11 @@ slots."))
 (defclass committer (contact-data) ())
 (defclass author (contact-data) ())
 
-(defclass commits ()
+(defclass network-data-commit ()
+  (message time parents date author id space gravatar login)
+  (:documentation "We get commit data like this from the Network API."))
+
+(defclass commits (network-data-commit)
   (author authored-date committed-date committer
           id message parents tree url)
   (:documentation "A commit object."))
