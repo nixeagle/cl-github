@@ -358,10 +358,15 @@ slots."))
           (error "Not done!")))
 
 ;;; API calls
-(defun show-user (user &key login token)
+(defun show-user (user &key login token name blog email company location)
   (slot-value (to-json (github-request :parameters `("user" "show" ,user)
                                        :login login
-                                       :token token)) 'user))
+                                       :token token
+                                       :values\[blog\] blog
+                                       :values\[name\] name
+                                       :values\[email\] email
+                                       :values\[company\] company
+                                       :values\[location\] location)) 'user))
 
 (defun show-followers (username)
   "List all followers of USERNAME."
