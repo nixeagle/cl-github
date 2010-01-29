@@ -5,7 +5,13 @@
 
 (in-package :nisp.github)
 
-(defparameter +github-api-url+ "https://github.com/api/v2/json"
+(defparameter +github-api-url+ "http://github.com/api/v2/json"
+  ;; Use only the json interface, we do not want to implement the xml or
+  ;; yaml interfaces.
+  "Github api location.
+This is the same for every call.")
+
+(defparameter +github-ssl-api-url+ "https://github.com/api/v2/json"
   ;; Use only the json interface, we do not want to implement the xml or
   ;; yaml interfaces.
   "Github api location.
@@ -30,7 +36,7 @@ When parsing the plan json object, this will be set to \"USER\".")
 (defun github-request (&rest parameters)
   "Ask github about PARAMETERS."
   (with-github-content-types
-    (drakma:http-request (apply #'build-github-api-url parameters)
+    (drakma:http-request (apply #'build-github-api-url +github-api-url+ parameters)
                          :want-stream t)))
 
 (defun github-request->alist (&rest parameters)
@@ -41,7 +47,9 @@ When parsing the plan json object, this will be set to \"USER\".")
                (decode-json result))) 
       (close result))))
 
-(defun github-authed-request (login token &rest parameters)
+(defun github-authed-request (&rest args
+                              &key login token parameters &allow-other-keys)
+  (declare (ignore args))
   (with-github-content-types
     (drakma:http-request (apply #'build-github-api-url parameters)
                          :method :post
@@ -291,7 +299,7 @@ slots."))
             (if new
                 (concatenate 'string prior "/" (url-encode new))
                 prior))
-          (cons +github-api-url+ parameters)))
+          parameters))
 
 (defmethod make-object :before (bindings
                                 (class (eql nil))
