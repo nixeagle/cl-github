@@ -69,10 +69,13 @@ When parsing the plan json object, this will be set to \"USER\".")
 (defun key-add-or-set (key)
   "Mark KEY a prototype if it is, and add it to the accumulator."
   (let ((key (funcall #'camel-case-to-lisp key)))
-    (print key)
     (if (and (not *current-prototype*)
              (or (string= key "USER")
                  (string= key "PLAN")
+                 (string= key "AUTHOR")
+                 (string= key "PARENTS")
+                 (string= key "COMMITTER")
+                 (string= key "COMMITS")
                  (string= key "REPOSITORY")
                  (string= key "REPOSITORIES")
                  (string= key "NETWORK")
@@ -252,6 +255,24 @@ slots."))
 (defclass branches ()
   ((branches :reader branches))
   (:documentation "List of branches on a repository."))
+
+(defclass parents ()
+  (id)
+  ;; Yes this is a little strange... but this is how github does it, it
+  ;; can be cleaned up later.
+  (:documentation "The id for the parent commit."))
+(defclass contact-data ()
+  (email login name)
+  (:documentation "Person information."))
+
+(defclass committer (contact-data) ())
+(defclass author (contact-data) ())
+
+(defclass commits ()
+  (author authored-date committed-date committer
+          id message parents tree url)
+  (:documentation "A commit object."))
+
 
 ;;; utils
 (defun build-github-api-url (&rest parameters)
@@ -479,5 +500,12 @@ These are basically read only ssh keys."
   (declare (type string username repository))
   (json->class (github-request "repos" "show" username repository "branches")
                'branches))
+
+(defun show-commits (username repository branch)
+  "List commits in USERNAME's REPOSITORY on the given BRANCH."
+  (declare (type string username repository branch))
+  (slot-value
+   (to-json (github-request "commits" "list" username repository branch))
+   'commits))
 
 ;;; End file
