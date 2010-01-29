@@ -228,6 +228,11 @@ abstract class that inherits all the conflicting classes so that at all
 times the result object at least makes sense and has no missing
 slots."))
 
+(defclass collaborators ()
+  (collaborators)
+  (:documentation "List of collaborators."))
+
+
 ;;; utils
 (defun build-github-api-url (&rest parameters)
   "Build a request url using PARAMETERS."
@@ -414,5 +419,21 @@ These are basically read only ssh keys."
   (declare (type string repository)
            (type fixnum id))
   (not-done repository id))
+
+(defun collaborators (username repository)
+  "List collaborators on REPOSITORY owned by USERNAME."
+  (declare (type string username repository))
+  (json->class (github-request "repos" "show" username repository "collaborators")
+               'collaborators))
+
+(defun add-collaborator (username repository)
+  "Add USERNAME to the collaborators list of REPOSITORY."
+  (declare (type string username repository))
+  (not-done username repository))
+
+(defun remove-collaborator (username repository)
+  "Remove USERNAME from the collaborators list of REPOSITORY."
+  (declare (type string username repository))
+  (not-done username repository))
 
 ;;; End file
