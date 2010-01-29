@@ -47,7 +47,9 @@ When parsing the plan json object, this will be set to \"USER\".")
       (close result))))
 
 (defun github-request (&rest args
-                              &key login token parameters &allow-other-keys)
+                       &key (login *default-login*)
+                       (token *default-token*)
+                       parameters &allow-other-keys)
   (with-github-content-types
     (drakma:http-request (apply #'build-github-api-url
                                 (if (and login token)
