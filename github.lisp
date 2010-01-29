@@ -91,13 +91,17 @@ When parsing the plan json object, this will be set to \"USER\".")
   "If VALUE (in a JSON Object being decoded) corresponds to a key which
 matches *PROTOTYPE-NAME*, set VALUE to be the prototype of the Object.
 Otherwise, do the same as ACCUMULATOR-ADD-VALUE."
-  (if (eql json::*prototype* t)
-      (progn
-        (check-type value (or json::prototype string)
-                    (format nil "Invalid prototype: ~S." value))
-        (setq json::*prototype* *current-prototype*)
-        json::*accumulator*)
-      (json::accumulator-add-value value)))
+  (prog1
+      (if (eql json::*prototype* t)
+          (progn
+            (check-type value (or json::prototype string)
+                        (format nil "Invalid prototype: ~S." value))
+            (setq json::*prototype* *current-prototype*)
+        
+            (print "here")
+            json::*accumulator*)
+          (json::accumulator-add-value value))
+    (setq *current-prototype* nil)))
 
 ;;; Modified from cl-json 
 (defun accumulator-get-object ()
