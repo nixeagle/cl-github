@@ -564,6 +564,9 @@ These are basically read only ssh keys."))
   (:documentation "List treeish objects for USERNAME's REPOSITORY at TREE."))
 (defgeneric show-blob (username repository path tree &key login token)
   (:documentation "Show contents of the file at PATH in USERNAME's REPOSITORY."))
+(defgeneric show-raw-blob (username repository sha &key login token)
+  (:documentation "Show raw contents of SHA in USERNAME's REPOSITORY."))
+
 (defmethod show-tree ((username string) (repository string)
                       (tree string) &key login token)
   (slot-value (to-json (request login token `("tree" "show" ,username
@@ -576,6 +579,12 @@ These are basically read only ssh keys."))
                                                      ,repository ,tree
                                                      ,path)))
               'blob))
+
+(defmethod show-raw-blob ((username string) (repository string)
+                          (sha string) &key login token)
+  (github-request :login login :token token :auth :default
+                  :parameters `("blob" "show" ,username ,repository ,sha)
+                  :want-string t))
 
 ;;; Network API
 (defgeneric show-network-meta (username repository &key login token)
