@@ -188,6 +188,10 @@ Otherwise, create a FLUID-OBJECT with slots interned in
         repos id type pushed score created)
   (:documentation "Describes a github user search result."))
 
+(defclass followers ()
+    (users)
+  (:documentation "List of users who follow someone."))
+
 ;;; utils
 (defun build-github-api-url (&rest parameters)
   "Build a request url using PARAMETERS."
