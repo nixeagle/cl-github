@@ -342,4 +342,23 @@ slots."))
   (slot-value (to-json (github-request "repos" "show" username))
               'repositories))
 
+(defun watch-repository (username repository)
+  "Watch REPOSITORY owned by USERNAME."
+  (declare (type string username repository))
+  (not-done username repository))
+
+(defun unwatch-repository (username repository)
+  "Stop watching REPOSITORY owned by USERNAME."
+  (declare (type string username repository))
+  (not-done username repository))
+
+(defun watch (username &rest repositories)
+  "Watch REPOSITORIES owned by USERNAME."
+  (declare (type string username))
+  (not-done username repositories))
+
+(defun unwatch (username &rest repositories)
+  "Stop watching REPOSITORIES owned by USERNAME."
+  (declare (type string username))
+  (not-done username repositories))
 ;;; End file
