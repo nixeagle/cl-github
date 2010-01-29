@@ -439,8 +439,8 @@ These are basically read only ssh keys."
   (declare (type string username repository))
   (not-done username repository))
 
-(defun repository-network (username repository)
-  "Look at network of USERNAME's REPOSITORY."
+(defun show-network (username repository)
+  "Show at network of USERNAME's REPOSITORY."
   (slot-value
    (to-json (github-request "repos" "show" username repository "network"))
    'network))
