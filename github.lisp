@@ -135,6 +135,19 @@ Otherwise, create a FLUID-OBJECT with slots interned in
                                             *previous-prototype*))
      ,@body))
 
+(defgeneric to-json (object)
+  (:method :around (obj)
+           (let ((json:*json-symbols-package* :nisp.github))
+             (call-next-method))))
+(defmethod to-json ((obj string))
+  (with-github-decoder 
+    (json:decode-json-from-string obj)))
+(defmethod to-json ((obj stream))
+  "Read directly from a stream and close the stream when done."
+  (prog1 (with-github-decoder
+           (json:decode-json obj))
+    (close obj)))
+
 ;;; JSON classes
 (defclass user ()
   (plan gravatar-id name company location created-at
