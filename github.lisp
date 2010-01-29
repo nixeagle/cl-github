@@ -74,8 +74,7 @@ When parsing the plan json object, this will be set to \"USER\".")
         (token (or token *default-token*)))
     (check-type login string)
     (check-type token string)
-    (apply #'github-authed-request :login login :token token
-           :parameters parameters args)))
+    (apply #'github-request args)))
 
 (defun build-parameters (&rest args &key parameters &allow-other-keys)
   "Convert ARGS to an alist of parameters."
