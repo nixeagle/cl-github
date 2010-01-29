@@ -486,15 +486,10 @@ ID can be either a string or a positive number."
                            :parameters `("repos" "unwatch" ,username ,repository)))
    'repository))
 
-(defun fork-repository (username repository)
+(defun fork (username repository &key login token)
   "Fork REPOSITORY owned by USERNAME."
-  (declare (type string username repository))
-  (not-done username repository))
-
-(defun fork (username repositories)
-  "Fork REPOSITORIES owned by USERNAME."
   (declare (type string username))
-  (not-done username repositories))
+  (not-done username repositories login token))
 
 (defun create-repository (repository &key
                           description homepage
