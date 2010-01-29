@@ -361,4 +361,15 @@ slots."))
   "Stop watching REPOSITORIES owned by USERNAME."
   (declare (type string username))
   (not-done username repositories))
+
+(defun fork-repository (username repository)
+  "Fork REPOSITORY owned by USERNAME."
+  (declare (type string username repository))
+  (not-done username repository))
+
+(defun fork (username repositories)
+  "Fork REPOSITORIES owned by USERNAME."
+  (declare (type string username))
+  (not-done username repositories))
+
 ;;; End file
