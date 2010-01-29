@@ -396,4 +396,23 @@ slots."))
   (declare (type string repository))
   (not-done repository))
 
+(defun deply-keys (repository)
+  "List REPOSITORY's deploy keys.
+
+These are basically read only ssh keys."
+  ;; Thanks charlie.
+  (declare (type string repository))
+  (not-done repository))
+
+(defun add-deploy-key (repository &key title key)
+  "Add KEY named TITLE as a deploy key for REPOSITORY."
+  (declare (type string repository title key))
+  (not-done repository title key))
+
+(defun remove-deploy-key (repository &key id)
+  "Remove key identified by ID as a deploy key for REPOSITORY."
+  (declare (type string repository)
+           (type fixnum id))
+  (not-done repository id))
+
 ;;; End file
