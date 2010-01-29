@@ -222,6 +222,7 @@ Otherwise, create a FLUID-OBJECT with slots interned in
                                 (class (eql nil))
                                 &optional superclasses)
   "Debug helper to print the keys of BINDINGS."
+  (declare (ignore superclasses))
   (write (mapcar #'car bindings)
          :case :downcase))
 
