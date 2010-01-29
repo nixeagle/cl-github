@@ -190,6 +190,13 @@ Otherwise, create a FLUID-OBJECT with slots interned in
            (json:decode-json obj))
     (close obj)))
 
+(defgeneric json->alist (object))
+(defmethod json->alist ((object stream))
+  (with-decoder-simple-list-semantics
+    (decode-json object)))
+(defmethod json->alist :after ((object stream))
+  (close object))
+
 (defgeneric json->class (object class)
   (:documentation "Store json in OBJECT to CLASS"))
 
