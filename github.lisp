@@ -336,4 +336,10 @@ slots."))
   (slot-value (to-json (github-request "repos" "show" username reponame))
               'repository))
 
+(defun user-repositories (username)
+  "List USERNAME's repositories."
+  (declare (type string username))
+  (slot-value (to-json (github-request "repos" "show" username))
+              'repositories))
+
 ;;; End file
