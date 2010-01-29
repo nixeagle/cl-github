@@ -227,7 +227,9 @@ the network api."))
   (:documentation "Heads of branches returned from github's Network API."))
 
 (defclass github-network-meta ()
-  (blocks nethash focus dates users)
+  (blocks
+   (nethash :reader nethash)
+   focus dates users)
   (:documentation "Toplevel result from github's Network API."))
 
 ;;; utils
@@ -568,5 +570,15 @@ These are basically read only ssh keys."))
                                                      ,repository ,tree
                                                      ,path)))
               'blob))
+
+;;; Network API
+(defgeneric show-network-meta (username repository &key login token)
+  (:documentation "Network meta information for USERNAME's REPOSITORY."))
+
+(defmethod show-network-meta ((username string) (repository string)
+                              &key login token)
+  (let ((*current-prototype* "GITHUB-NETWORK-META"))
+    (to-json (github-request :login login :token token :auth :default
+                             :parameters `(,username ,repository "network_meta")                                  :base-url "http://github.com"))))
 
 ;;; End file
