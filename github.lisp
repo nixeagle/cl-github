@@ -17,6 +17,11 @@ This is the same for every call.")
   "Github api location.
 This is the same for every call.")
 
+(defvar *default-login* ""
+  "Default user to log in as when possible.")
+(defvar *default-token* ""
+  "Default token to use when possible.")
+
 (pushnew (cons "application" "json") drakma:*text-content-types*)
 
 (defvar *current-prototype* nil
