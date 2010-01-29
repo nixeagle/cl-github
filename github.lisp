@@ -465,28 +465,26 @@ ID can be either a string or a positive number."
 (defun user-repositories (username)
   "List USERNAME's repositories."
   (declare (type string username))
-  (slot-value (to-json (github-request "repos" "show" username))
+  (slot-value (to-json (github-simple-request "repos" "show" username))
               'repositories))
 
-(defun watch-repository (username repository)
+(defun watch (username repository &key login token)
   "Watch REPOSITORY owned by USERNAME."
   (declare (type string username repository))
-  (not-done username repository))
+  (slot-value
+   (to-json
+    (github-authed-request :login login :token token
+                           :parameters `("repos" "watch" ,username ,repository)))
+   'repository))
 
-(defun unwatch-repository (username repository)
+(defun unwatch (username repository &key login token)
   "Stop watching REPOSITORY owned by USERNAME."
   (declare (type string username repository))
-  (not-done username repository))
-
-(defun watch (username &rest repositories)
-  "Watch REPOSITORIES owned by USERNAME."
-  (declare (type string username))
-  (not-done username repositories))
-
-(defun unwatch (username &rest repositories)
-  "Stop watching REPOSITORIES owned by USERNAME."
-  (declare (type string username))
-  (not-done username repositories))
+  (slot-value
+   (to-json
+    (github-authed-request :login login :token token
+                           :parameters `("repos" "unwatch" ,username ,repository)))
+   'repository))
 
 (defun fork-repository (username repository)
   "Fork REPOSITORY owned by USERNAME."
