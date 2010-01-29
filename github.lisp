@@ -491,19 +491,19 @@ ID can be either a string or a positive number."
   (declare (type string username))
   (not-done username repositories login token))
 
-(defun create-repository (repository &key
+(defun create-repository (repository &key login token
                           description homepage
                           ;; Default to public.
                           (public 1))
   "Create new REPOSITORY on github."
   (declare (type string repository description homepage)
            (type (integer 0 1) public))
-  (not-done repository description homepage public))
+  (not-done repository description homepage public login token))
 
-(defun delete-repository (repository)
+(defun delete-repository (repository &key login token)
   "Delete REPOSITORY on github."
   (declare (type string repository))
-  (not-done repository))
+  (not-done repository login token))
 
 (defun set-repository-private (repository)
   "Mark REPOSITORY as private on github."
