@@ -47,20 +47,24 @@ When parsing the plan json object, this will be set to \"USER\".")
       (close result))))
 
 (defun github-request (&rest args
-                       &key login token 
+                       &key login token auth
                        parameters &allow-other-keys)
-  
-  (with-github-content-types
-    (drakma:http-request (apply #'build-github-api-url
-                                (if (and login token)
-                                    +github-ssl-api-url+
-                                    +github-api-url+) parameters)
-                         :method (if (and login token) :post :get)
-                         :REDIRECT t
-                         :want-stream t
-                         :parameters
-                         (apply #'build-parameters :login login :token token
-                                args))))
+  (let ((login (or login (and (member auth '(:default :force)) *default-login*)))
+        (token (or token (and (member auth '(:default :force)) *default-token*))))
+    (when (eq :force auth)
+      (check-type login string)
+      (check-type token string))
+    (with-github-content-types
+      (drakma:http-request (apply #'build-github-api-url
+                                  (if (and login token)
+                                      +github-ssl-api-url+
+                                      +github-api-url+) parameters)
+                           :method (if (and login token) :post :get)
+                           :REDIRECT t
+                           :want-stream t
+                           :parameters
+                           (apply #'build-parameters :login login :token token
+                                  args)))))
 
 (defun github-simple-request (&rest parameters)
   "Ask github about PARAMETERS."
