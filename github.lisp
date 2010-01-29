@@ -386,4 +386,14 @@ slots."))
   (declare (type string repository))
   (not-done repository))
 
+(defun set-repository-private (repository)
+  "Mark REPOSITORY as private on github."
+  (declare (type string repository))
+  (not-done repository))
+
+(defun set-repository-public (repository)
+  "Mark REPOSITORY as public on github."
+  (declare (type string repository))
+  (not-done repository))
+
 ;;; End file
