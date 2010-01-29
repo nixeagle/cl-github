@@ -540,18 +540,27 @@ These are basically read only ssh keys."
   "List collaborators on REPOSITORY owned by USERNAME."
   (declare (type string username repository))
   (json->class (github-request :login login :token token
-                :parameters `("repos" "show" ,username ,repository "collaborators"))
+                               :parameters `("repos" "show" ,username
+                                                     ,repository "collaborators"))
                'collaborators))
 
 (defun add-collaborator (username repository &key login token)
   "Add USERNAME to the collaborators list of REPOSITORY."
   (declare (type string username repository))
-  (not-done username repository login token))
+  (json->class
+   (github-authed-request :login login :token token
+                          :parameters `("repos" "collaborators" ,repository
+                                                "add" ,username))
+   'collaborators))
 
 (defun remove-collaborator (username repository &key login token)
   "Remove USERNAME from the collaborators list of REPOSITORY."
   (declare (type string username repository))
-  (not-done username repository login token))
+  (json->class
+   (github-authed-request :login login :token token
+                          :parameters `("repos" "collaborators" ,repository
+                                                "remove" ,username))
+   'collaborators))
 
 (defun show-network (username repository &key login token)
   "Show at network of USERNAME's REPOSITORY."
