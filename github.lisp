@@ -42,18 +42,19 @@ When parsing the plan json object, this will be set to \"USER\".")
       (close result))))
 
 (defun github-request (&rest args
-                       &key login token auth
+                       &key login token auth base-url
                        parameters &allow-other-keys)
   (let ((login (or login (and (member auth '(:default :force)) *default-login*)))
-        (token (or token (and (member auth '(:default :force)) *default-token*))))
+        (token (or token (and (member auth '(:default :force)) *default-token*)))
+        (base-url (or base-url (if (and login token)
+                                   +github-ssl-api-url+
+                                   +github-api-url+))))
     (when (eq :force auth)
       (check-type login string)
       (check-type token string))
     (with-github-content-types
       (drakma:http-request (apply #'build-github-api-url
-                                  (if (and login token)
-                                      +github-ssl-api-url+
-                                      +github-api-url+) parameters)
+                                  base-url parameters)
                            :method (if (and login token) :post :get)
                            :REDIRECT t
                            :want-stream t
