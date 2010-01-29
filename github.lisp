@@ -81,16 +81,6 @@ When parsing the plan json object, this will be set to \"USER\".")
   "Ask github about PARAMETERS."
   (github-request :parameters parameters))
 
-(defun github-authed-request (&rest args
-                              &key login token 
-                              parameters &allow-other-keys)
-  (declare (ignore parameters))
-  (let ((login (or login *default-login*))
-        (token (or token *default-token*)))
-    (check-type login string)
-    (check-type token string)
-    (apply #'github-request :login login :token token args)))
-
 (defun build-parameters (&rest args &key parameters &allow-other-keys)
   "Convert ARGS to an alist of parameters."
   (declare (ignore parameters))
