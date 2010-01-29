@@ -209,6 +209,10 @@ slots."))
   (status)
   (:documentation "Result status from github api"))
 
+(defclass blob ()
+  (name size sha data mode mime-type)
+  (:documentation "Git blob that we get from github."))
+
 (defclass tree ()
   (name sha mode type) 
   (:documentation "Treeish git object that we get from github."))
