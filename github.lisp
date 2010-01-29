@@ -244,6 +244,16 @@ Otherwise, create a FLUID-OBJECT with slots interned in
   ;; Should be written in terms of FOLLOW-USER.
   (error "Not done!"))
 
+(defun unfollow-user (user-login pass username)
+  "Unfollow USERNAME using USER-LOGIN."
+  (declare (type string user-login pass username))
+  (error "Not done!"))
+
+(defun unfollow (user-login pass &rest usernames)
+  "Unfollow USERNAMES using USER-LOGIN."
+  (declare (type string user-login pass))
+  (error "Not done!"))
+
 (defun search-users (username)
   "Search github for USERNAME."
   (declare (type string username))
