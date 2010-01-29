@@ -43,7 +43,7 @@ When parsing the plan json object, this will be set to \"USER\".")
 
 (defun github-request (&rest args
                        &key login token auth base-url
-                       parameters &allow-other-keys)
+                       parameters method &allow-other-keys)
   (let ((login (or login (and (member auth '(:default :force)) *default-login*)))
         (token (or token (and (member auth '(:default :force)) *default-token*)))
         (base-url (or base-url (if (and login token)
@@ -55,7 +55,7 @@ When parsing the plan json object, this will be set to \"USER\".")
     (with-github-content-types
       (drakma:http-request (apply #'build-github-api-url
                                   base-url parameters)
-                           :method (if (and login token) :post :get)
+                           :method (or method (if (and login token) :post :get))
                            :REDIRECT t
                            :want-stream t
                            :parameters
@@ -92,7 +92,8 @@ When parsing the plan json object, this will be set to \"USER\".")
               (value (next arg)))
           (print key)
           (when (and value (not (eq :parameters key))
-                     (not (eq :auth key)))
+                     (not (eq :auth key))
+                     (not (eq :method key)))
             (collect (cons (dash-to-underscore
                             (string-downcase (symbol-name key))) value))))))
 
