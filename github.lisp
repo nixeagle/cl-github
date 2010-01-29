@@ -140,7 +140,8 @@ Otherwise, create a FLUID-OBJECT with slots interned in
 (defgeneric to-json (object)
   (:method :around (obj)
            (let ((json:*json-symbols-package* :nisp.github))
-             (call-next-method))))
+             (with-local-class-registry (:inherit nil)
+               (call-next-method)))))
 (defmethod to-json ((obj string))
   (with-github-decoder 
     (json:decode-json-from-string obj)))
@@ -188,8 +189,7 @@ Otherwise, create a FLUID-OBJECT with slots interned in
 (defun search-users (username)
   "Search github for USERNAME."
   (declare (type string username))
-  (with-local-class-registry (:inherit nil)
-    (slot-value (to-json (github-request "user" "search" username))
-                'users)))
+  (slot-value (to-json (github-request "user" "search" username))
+              'users))
 
 ;;; End file
