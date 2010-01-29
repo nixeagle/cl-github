@@ -447,20 +447,21 @@ ID can be either a string or a positive number."
 (defun search-users (username)
   "Search github for USERNAME."
   (declare (type string username))
-  (slot-value (to-json (github-request "user" "search" username))
+  (slot-value (to-json (github-simple-request "user" "search" username))
               'users))
 
 ;;; Repositories
 (defun search-repositories (search-string)
   "Search github repositories for SEARCH-STRING."
   (declare (type string search-string))
-  (slot-value (to-json (github-request "repos" "search" search-string))
+  (slot-value (to-json (github-simple-request "repos" "search" search-string))
               'repositories))
 
-(defun show-repository (username reponame)
+(defun show-repository (username reponame &key login token)
   "Show information on USERNAME's REPONAME."
   (declare (type string username reponame))
-  (slot-value (to-json (github-request "repos" "show" username reponame))
+  (slot-value (to-json (github-request :login login :token token
+                        :parameters `("repos" "show" ,username ,reponame)))
               'repository))
 
 (defun user-repositories (username)
@@ -490,7 +491,7 @@ ID can be either a string or a positive number."
 (defun fork (username repository &key login token)
   "Fork REPOSITORY owned by USERNAME."
   (declare (type string username))
-  (not-done username repositories login token))
+  (not-done username repository login token))
 
 (defun create-repository (repository &key login token
                           description homepage
