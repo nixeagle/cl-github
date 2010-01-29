@@ -592,7 +592,11 @@ ID can be either a string or a positive number."
 
 (defmethod fork ((username string) (repository string) &key login token)
   "Fork REPOSITORY owned by USERNAME."
-  (not-done username repository login token))
+  (slot-value
+   (to-json
+    (github-request :login login :token token :auth :force
+                    :parameters `("repos" "fork" ,username ,repository)))
+   'repository))
 
 (defmethod create-repository ((repository string) &key login token
                           description homepage
