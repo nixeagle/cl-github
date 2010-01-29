@@ -236,6 +236,11 @@ slots."))
 (defclass network (repositories)
   ()
   (:documentation "A network is just another name for repositories."))
+
+(defclass languages ()
+  ((languages :reader languages))
+  (:documentation "List of languages."))
+
 ;;; utils
 (defun build-github-api-url (&rest parameters)
   "Build a request url using PARAMETERS."
@@ -444,5 +449,11 @@ These are basically read only ssh keys."
   (slot-value
    (to-json (github-request "repos" "show" username repository "network"))
    'network))
+
+(defun show-languages (username repository)
+  "List REPOSITORY's languages."
+  (declare (type string username repository))
+  (json->class (github-request "repos" "show" username repository "languages")
+               'languages))
 
 ;;; End file
