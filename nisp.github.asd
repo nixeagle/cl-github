@@ -20,4 +20,5 @@
   :components
   ((:file "package")
    (:file "url-utils")
+   (:file "json")
    (:file "github")))
