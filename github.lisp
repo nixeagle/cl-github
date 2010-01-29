@@ -402,16 +402,14 @@ These are basically read only ssh keys."))
    'repository))
 
 (defmethod unwatch ((username string) (repository string) &key login token)
-  (slot-value
-   (to-json
-    (authed-request login token `("repos" "unwatch" ,username ,repository)))
-   'repository))
+  (slot-value (to-json (authed-request login token
+                                       `("repos" "unwatch" ,username ,repository)))
+              'repository))
 
 (defmethod fork ((username string) (repository string) &key login token)
-  (slot-value
-   (to-json
-    (authed-request login token `("repos" "fork" ,username ,repository)))
-   'repository))
+  (slot-value (to-json (authed-request login token
+                                       `("repos" "fork" ,username ,repository)))
+              'repository))
 
 (defmethod create-repository ((repository string) &key login token
                           description homepage
