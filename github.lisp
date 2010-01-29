@@ -250,23 +250,23 @@ Otherwise, create a FLUID-OBJECT with slots interned in
 (defun follow-user (user-login pass username)
   "Follow USERNAME using USER-LOGIN."
   (declare (type string user-login pass username))
-  (error "Not done!"))
+  (not-done user-login pass username))
 
 (defun follow (user-login pass &rest usernames)
   "Follow USERNAMES using USER-LOGIN."
   (declare (type string user-login pass))
   ;; Should be written in terms of FOLLOW-USER.
-  (error "Not done!"))
+  (not-done user-login pass usernames))
 
 (defun unfollow-user (user-login pass username)
   "Unfollow USERNAME using USER-LOGIN."
   (declare (type string user-login pass username))
-  (error "Not done!"))
+  (not-done user-login pass username))
 
 (defun unfollow (user-login pass &rest usernames)
   "Unfollow USERNAMES using USER-LOGIN."
   (declare (type string user-login pass))
-  (error "Not done!"))
+  (not-done user-login pass usernames))
 
 (defun watched-repositories (username)
   "List repositories USERNAME watches."
@@ -274,6 +274,31 @@ Otherwise, create a FLUID-OBJECT with slots interned in
   (slot-value
    (to-json (github-request "repos" "watched" username))
    'repositories))
+
+(defun user-emails (username)
+  "List all emails USERNAME uses."
+  (not-done username))
+
+(defun add-user-email (username email)
+  "Add EMAIL to USERNAME's email list."
+  (not-done username email))
+
+(defun remove-user-email (username email)
+  "Remove EMAIL from USERNAME's email list."
+  (not-done username email))
+
+(defun user-keys (username)
+  "List all public keys USERNAME uses."
+  (not-done username))
+
+(defun add-user-key (username key)
+  "Add KEY to USERNAME's key list."
+  (not-done username key))
+
+(defun remove-user-key (username key)
+  "REMOVE KEY from USERNAME's key list."
+  (not-done username key))
+
 
 (defun search-users (username)
   "Search github for USERNAME."
