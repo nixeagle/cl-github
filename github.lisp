@@ -376,9 +376,14 @@ slots."))
                           description homepage
                           ;; Default to public.
                           (public 1))
-  "Create new REPOSITORY."
+  "Create new REPOSITORY on github."
   (declare (type string repository description homepage)
            (type (integer 0 1) public))
   (not-done repository description homepage public))
+
+(defun delete-repository (repository)
+  "Delete REPOSITORY on github."
+  (declare (type string repository))
+  (not-done repository))
 
 ;;; End file
