@@ -66,6 +66,17 @@ When parsing the plan json object, this will be set to \"USER\".")
                            (apply #'build-parameters :login login :token token
                                   args)))))
 
+(defun request (login token uri-parameters &rest args &key
+                &allow-other-keys)
+  (apply #'github-request :login login :token token :auth :default
+         :parameters uri-parameters args))
+
+(defun authed-request (login token uri-parameters &rest args &key
+                &allow-other-keys)
+  (apply #'github-request :login login :token token :auth :force 
+         :parameters uri-parameters args))
+
+
 (defun github-simple-request (&rest parameters)
   "Ask github about PARAMETERS."
   (github-request :parameters parameters))
