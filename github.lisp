@@ -5,7 +5,7 @@
 
 (in-package :nisp.github)
 
-(defparameter +github-api-url+ "https://github.com/api/v2"
+(defparameter +github-api-url+ "https://github.com/api/v2/json"
   ;; Use only the json interface, we do not want to implement the xml or
   ;; yaml interfaces.
   "Github api location.
@@ -21,14 +21,25 @@ This is the same for every call.")
 For example: {\"user\":{\"plan\":{\"name\":....}}}
 When parsing the plan json object, this will be set to \"USER\".")
 
-(defun github-request (uri login token &rest parameters)
-  "Ask github about URI using LOGIN and TOKEN."
-  (declare (type string login token))
-  (drakma:http-request uri :method :post
-                       :parameters
-                       `(("login" . ,login)
-                         ("token" . ,token)
-                         ,@parameters)))
+(defun github-request (&rest parameters)
+  "Ask github about PARAMETERS."
+  (with-github-content-types
+    (drakma:http-request (apply #'build-github-api-url parameters)
+                         :want-stream t)))
+
+(defmacro with-github-content-types (&body body)
+  "Evaluate BODY treating application/json as text."
+  `(let ((drakma:*text-content-types* '(("application" . "json")
+                                        ("text" . nil))))
+     ,@body))
+
+(defun github-authed-request (login token &rest parameters)
+  (with-github-content-types
+    (drakma:http-request (apply #'build-github-api-url parameters)
+                         :method :post
+                         :parameters
+                         `(,(and login `("login" . ,login))
+                            ,(and token `("token" . ,token))))))
 
 (defun set-prototype (key)
   "Make KEY the json `*PROTOTYPE*'."
