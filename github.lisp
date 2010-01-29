@@ -197,8 +197,11 @@ Otherwise, create a FLUID-OBJECT with slots interned in
   (:documentation "Describes a github user search result."))
 
 (defclass followers ()
-    (users)
-  (:documentation "List of users who follow someone."))
+  (users)
+  (:documentation "List of users following someone."))
+(defclass following ()
+  (users)
+  (:documentation "List of users someone follows."))
 
 ;;; utils
 (defun build-github-api-url (&rest parameters)
