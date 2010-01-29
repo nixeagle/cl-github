@@ -210,6 +210,10 @@ Otherwise, create a FLUID-OBJECT with slots interned in
   ;; currently used only for WATCHED-REPOSITORIES.
   (:documentation "Repository information."))
 
+(defclass searched-repository ()
+  (name size followers username language fork id type pushed
+        forks description score created)
+  (:documentation "Search repository result information."))
 
 ;;; utils
 (defun build-github-api-url (&rest parameters)
