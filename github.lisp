@@ -310,6 +310,12 @@ Otherwise, create a FLUID-OBJECT with slots interned in
   (slot-value (to-json (github-request "user" "search" username))
               'users))
 
+;;; Repositories
+(defun search-repositories (search-string)
+  "Search github repositories for SEARCH-STRING."
+  (declare (type string search-string))
+  (slot-value (to-json (github-request "repos" "search" search-string))
+              'repositories))
 
 
 ;;; End file
