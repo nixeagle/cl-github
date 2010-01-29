@@ -225,6 +225,11 @@ Otherwise, create a FLUID-OBJECT with slots interned in
   (write (mapcar #'car bindings)
          :case :downcase))
 
+(defmacro not-done (&rest ignores)
+  "Throw an error saying not done."
+  `(progn (proclaim (list 'ignore ,@ignores))
+          (error "Not done!")))
+
 ;;; API calls
 (defun show-user (user)
   (slot-value (to-json (github-request "user" "show" user)) 'user))
