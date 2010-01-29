@@ -64,7 +64,8 @@ When parsing the plan json object, this will be set to \"USER\".")
     (print key)
     (if (and (not *current-prototype*)
              (or (string= key "USER")
-                 (string= key "PLAN")))
+                 (string= key "PLAN")
+                 (string= key "USERS")))
         (progn (setq json::*accumulator-last*
                      (setf (cdr json::*accumulator-last*) (cons (cons key nil) nil)))
                (setq *current-prototype* key)
@@ -161,6 +162,10 @@ Otherwise, create a FLUID-OBJECT with slots interned in
 (defclass plan ()
   (name collaborators space private-repos))
 
+(defclass users ()
+  (name location followers username language fullname
+        repos id type pushed score created)
+  (:documentation "Describes a github user search result."))
 
 ;;; utils
 (defun build-github-api-url (&rest parameters)
