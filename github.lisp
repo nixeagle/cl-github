@@ -367,10 +367,12 @@ slots."))
   (json->class (github-request "user" "show" username "following")
                'following))
 
-(defun follow-user (user-login pass username)
+(defun follow-user (username &key login token)
   "Follow USERNAME using USER-LOGIN."
-  (declare (type string user-login pass username))
-  (not-done user-login pass username))
+  (declare (type string username))
+  (json->class (github-authed-request :login login :token token
+                                      :parameters `("user" "follow" ,username))
+               'following))
 
 (defun follow (user-login pass &rest usernames)
   "Follow USERNAMES using USER-LOGIN."
