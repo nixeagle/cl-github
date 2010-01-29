@@ -92,10 +92,6 @@ When parsing the plan json object, this will be set to \"USER\".")
                      (not (eq :auth key)))
             (collect (cons (string-downcase (symbol-name key)) value))))))
 
-(defun set-prototype (key)
-  "Make KEY the json `*PROTOTYPE*'."
-  (setq json::*prototype* key))
-
 (defun beginning-of-object ()
   "Do more at prototype init"
   (setq *previous-prototype* *current-prototype*) (setq *current-prototype* nil)
@@ -129,7 +125,7 @@ When parsing the plan json object, this will be set to \"USER\".")
                      (setf (cdr json::*accumulator-last*) (cons (cons key nil) nil)))
                (setq *current-prototype* key)
               #+ () (pushnew (cons "PROTOTYPE" key) (cddr json::*accumulator*))
-               (set-prototype t))
+              (setq json::*prototype* key))
         (setq json::*accumulator-last*
               (setf (cdr json::*accumulator-last*) (cons (cons key nil) nil))))
     json::*accumulator*))
