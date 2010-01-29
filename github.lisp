@@ -226,6 +226,10 @@ the network api."))
   (name id)
   (:documentation "Heads of branches returned from github's Network API."))
 
+(defclass github-network-meta ()
+  (blocks nethash focus dates users)
+  (:documentation "Toplevel result from github's Network API."))
+
 ;;; utils
 (defun build-github-api-url (&rest parameters)
   "Build a request url using PARAMETERS."
