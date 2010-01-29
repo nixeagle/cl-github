@@ -114,6 +114,7 @@ When parsing the plan json object, this will be set to \"USER\".")
                  (string= key "COMMITTER")
                  (string= key "COMMITS")
                  (string= key "REPOSITORY")
+                 (string= key "PUBLIC-KEYS")
                  (string= key "REPOSITORIES")
                  (string= key "NETWORK")
                  (string= key "USERS")))
@@ -330,6 +331,10 @@ slots."))
   ((emails :reader emails))
   (:documentation "List of user emails."))
 
+(defclass public-keys ()
+  (title id key)
+  (:documentation "Information on a public key."))
+
 ;;; utils
 (defun build-github-api-url (&rest parameters)
   "Build a request url using PARAMETERS."
@@ -410,17 +415,27 @@ slots."))
                                       :parameters '("user" "email" "remove"))
                'emails))
 
-(defun user-keys (username)
-  "List all public keys USERNAME uses."
-  (not-done username))
+(defun user-keys (&key login token)
+  "List all public keys LOGIN uses."
+  (slot-value (to-json (github-authed-request :login login :token token
+                                              :parameters '("user" "keys")))
+              'public-keys))
 
-(defun add-user-key (username key)
-  "Add KEY to USERNAME's key list."
-  (not-done username key))
+(defun add-user-key (name key &key login token)
+  "Add KEY to LOGIN's key list."
+  (slot-value (to-json (github-authed-request :login login :token token
+                                              :name name :key key
+                                              :parameters '("user" "key" "add")))
+              'public-keys))
 
-(defun remove-user-key (username key)
-  "REMOVE KEY from USERNAME's key list."
-  (not-done username key))
+(defun remove-user-key (id &key login token)
+  "REMOVE KEY by ID from LOGIN's key list.
+
+ID can be either a string or a positive number."
+  (slot-value (to-json (github-authed-request :login login :token token
+                                              :id (princ-to-string id) 
+                                              :parameters '("user" "key" "remove")))
+              'public-keys))
 
 
 (defun search-users (username)
