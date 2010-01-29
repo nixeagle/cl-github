@@ -536,10 +536,11 @@ These are basically read only ssh keys."
            (type fixnum id))
   (not-done repository id login token))
 
-(defun collaborators (username repository)
+(defun collaborators (username repository &key login token)
   "List collaborators on REPOSITORY owned by USERNAME."
   (declare (type string username repository))
-  (json->class (github-request "repos" "show" username repository "collaborators")
+  (json->class (github-request :login login :token token
+                :parameters `("repos" "show" ,username ,repository "collaborators"))
                'collaborators))
 
 (defun add-collaborator (username repository &key login token)
@@ -552,41 +553,49 @@ These are basically read only ssh keys."
   (declare (type string username repository))
   (not-done username repository login token))
 
-(defun show-network (username repository)
+(defun show-network (username repository &key login token)
   "Show at network of USERNAME's REPOSITORY."
   (slot-value
-   (to-json (github-request "repos" "show" username repository "network"))
+   (to-json (github-request :login login :token token
+             :parameters `("repos" "show" ,username ,repository "network")))
    'network))
 
-(defun show-languages (username repository)
+(defun show-languages (username repository &key login token)
   "List REPOSITORY's languages."
   (declare (type string username repository))
-  (json->class (github-request "repos" "show" username repository "languages")
+  (json->class (github-request :login login :token token
+                               :parameters `("repos" "show" ,username ,repository "languages"))
                'languages))
 
-(defun show-tags (username repository)
+(defun show-tags (username repository &key login token)
   "List REPOSITORY's tags."
   (declare (type string username repository))
-  (json->class (github-request "repos" "show" username repository "tags")
+  (json->class (github-request :login login :token token
+                               :parameters `("repos" "show" ,username ,repository "tags"))
                'tags))
 
-(defun show-branches (username repository)
+(defun show-branches (username repository &key login token)
   "List REPOSITORY's remote branches."
   (declare (type string username repository))
-  (json->class (github-request "repos" "show" username repository "branches")
+  (json->class (github-request :login login :token token
+                               :parameters `("repos" "show" ,username ,repository "branches"))
                'branches))
 
-(defun show-commits (username repository branch &optional file)
+(defun show-commits (username repository branch &key file login token)
   "List commits in USERNAME's REPOSITORY on BRANCH optionally for FILE."
   (declare (type string username repository branch))
   (slot-value
-   (to-json (github-request "commits" "list" username repository branch file))
+   (to-json (github-request :login login :token token
+                            :parameters `("commits" "list" ,username
+                                                    ,repository ,branch ,file)))
    'commits))
 
-(defun show-commit (username repository sha)
+(defun show-commit (username repository sha &key login token)
   "Show data for commit identified by SHA on USERNAME's REPOSITORY."
   (declare (type string username repository sha))
-  (slot-value (to-json (github-request "commits" "show" username repository sha))
+  (slot-value (to-json (github-request :login login :token token
+                                       :parameters `("commits" "show" ,username
+                                                               ,repository ,sha)))
               'commit))
 
 ;;; End file
