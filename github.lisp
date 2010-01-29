@@ -373,15 +373,13 @@ slots."))
                                       :parameters `("user" "follow" ,username))
                'following))
 
-(defun unfollow-user (user-login pass username)
-  "Unfollow USERNAME using USER-LOGIN."
-  (declare (type string user-login pass username))
-  (not-done user-login pass username))
-
-(defun unfollow (user-login pass &rest usernames)
-  "Unfollow USERNAMES using USER-LOGIN."
-  (declare (type string user-login pass))
-  (not-done user-login pass usernames))
+(defun unfollow (username &key login token)
+  "Unfollow USERNAME using LOGIN."
+  ;; Github seems to ignore this request.
+  (declare (type string username))
+  (json->class (github-authed-request :login login :token token
+                                      :parameters `("user" "unfollow" ,username))
+               'following))
 
 (defun watched-repositories (username)
   "List repositories USERNAME watches."
