@@ -554,10 +554,19 @@ These are basically read only ssh keys."))
 ;;; Object API
 (defgeneric show-tree (username repository tree &key login token)
   (:documentation "List treeish objects for USERNAME's REPOSITORY at TREE."))
+(defgeneric show-blob (username repository path tree &key login token)
+  (:documentation "Show contents of the file at PATH in USERNAME's REPOSITORY."))
 (defmethod show-tree ((username string) (repository string)
                       (tree string) &key login token)
   (slot-value (to-json (request login token `("tree" "show" ,username
                                                      ,repository ,tree)))
               'tree))
+
+(defmethod show-blob ((username string) (repository string)
+                      (path string) (tree string) &key login token)
+  (slot-value (to-json (request login token `("blob" "show" ,username
+                                                     ,repository ,tree
+                                                     ,path)))
+              'blob))
 
 ;;; End file
