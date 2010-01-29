@@ -326,6 +326,10 @@ slots."))
   (diff filename)
   (:documentation "Modification information for a commit."))
 
+(defclass emails ()
+  ((emails :reader emails))
+  (:documentation "List of user emails."))
+
 ;;; utils
 (defun build-github-api-url (&rest parameters)
   "Build a request url using PARAMETERS."
@@ -385,20 +389,26 @@ slots."))
   "List repositories USERNAME watches."
   ;; Not 100% sure I like these named REPOSITORIES.
   (slot-value
-   (to-json (github-request "repos" "watched" username))
+   (to-json (github-simple-request "repos" "watched" username))
    'repositories))
 
-(defun user-emails (username)
-  "List all emails USERNAME uses."
-  (not-done username))
+(defun user-emails (&key login token)
+  "List all emails LOGIN uses."
+  (json->class (github-authed-request :login login :token token
+                                      :parameters '("user" "emails"))
+               'emails))
 
-(defun add-user-email (username email)
-  "Add EMAIL to USERNAME's email list."
-  (not-done username email))
+(defun add-user-email (email &key login token)
+  "Add EMAIL to LOGIN's email list."
+   (json->class (github-authed-request :login login :token token :email email
+                                      :parameters '("user" "email" "add"))
+               'emails))
 
-(defun remove-user-email (username email)
-  "Remove EMAIL from USERNAME's email list."
-  (not-done username email))
+(defun remove-user-email (email &key login token)
+  "Remove EMAIL from LOGIN's email list."
+  (json->class (github-authed-request :login login :token token :email email
+                                      :parameters '("user" "email" "remove"))
+               'emails))
 
 (defun user-keys (username)
   "List all public keys USERNAME uses."
