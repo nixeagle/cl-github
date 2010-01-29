@@ -433,7 +433,8 @@ These are basically read only ssh keys."))
   (:documentation "Fork REPOSITORY owned by USERNAME."))
 (defgeneric show-network (username repository &key login token)
   (:documentation "Show at network of USERNAME's REPOSITORY."))
-(defgeneric create-repository (repository &key login token description homepage (public 1))
+(defgeneric create-repository (repository &key login token description
+                                          homepage public)
   (:documentation "Create new REPOSITORY on github."))
 (defgeneric user-keys (&key login token)
   (:documentation "List all public keys LOGIN uses."))
@@ -501,15 +502,13 @@ These are basically read only ssh keys."))
 
 (defmethod follow ((username string) &key login token)
   "Follow USERNAME using USER-LOGIN."
-  (json->class (github-request :login login :token token :auth :force
-                                      :parameters `("user" "follow" ,username))
+  (json->class (authed-request login token `("user" "follow" ,username))
                'following))
-
+               
 (defmethod unfollow ((username string) &key login token)
   "Unfollow USERNAME using LOGIN."
   ;; Github seems to ignore this request.
-  (json->class (github-request :login login :token token :auth :force
-                               :parameters `("user" "unfollow" ,username))
+  (json->class (authed-request login token `("user" "unfollow" ,username))
                'following))
 
 (defmethod watched-repositories ((username string))
@@ -521,44 +520,38 @@ These are basically read only ssh keys."))
 
 (defmethod user-emails (&key login token)
   "List all emails LOGIN uses."
-  (json->class (github-request :login login :token token :auth :force
-                               :parameters '("user" "emails"))
+  (json->class (authed-request login token '("user" "emails"))
                'emails))
 
 (defmethod add-user-email ((email string) &key login token)
   "Add EMAIL to LOGIN's email list."
-  (json->class (github-request :login login :token token :auth :force
-                               :email email
-                               :parameters '("user" "email" "add"))
+  (json->class (authed-request login token '("user" "email" "add")
+                               :email email)
                'emails))
 
 (defmethod remove-user-email ((email string) &key login token)
   "Remove EMAIL from LOGIN's email list."
-  (json->class (github-request :login login :token token :auth :force
-                               :email email
-                               :parameters '("user" "email" "remove"))
+  (json->class (authed-request login token '("user" "email" "remove")
+                               :email email)
                'emails))
 
 (defmethod user-keys (&key login token)
   "List all public keys LOGIN uses."
-  (slot-value (to-json (github-request :login login :token token :auth :force
-                                       :parameters '("user" "keys")))
+  (slot-value (to-json (authed-request login token '("user" "keys")))
               'public-keys))
 
 (defmethod add-user-key ((name string) (key string) &key login token)
   "Add KEY to LOGIN's key list."
-  (slot-value (to-json (github-request :login login :token token :auth :force
-                                              :name name :key key
-                                              :parameters '("user" "key" "add")))
+  (slot-value (to-json (authed-request login token '("user" "key" "add")
+                                       :name name :key key))
               'public-keys))
 
 (defmethod remove-user-key ((id string) &key login token)
   "REMOVE KEY by ID from LOGIN's key list.
 
 ID can be either a string or a positive number."
-  (slot-value (to-json (github-request :login login :token token :auth :force
-                                       :id (princ-to-string id) 
-                                       :parameters '("user" "key" "remove")))
+  (slot-value (to-json (authed-request login token '("user" "key" "remove")
+                                       :id (princ-to-string id)))
               'public-keys))
 
 
@@ -568,7 +561,7 @@ ID can be either a string or a positive number."
               'users))
 
 ;;; Repositories
-(defmethod search-repositories ((search-string))
+(defmethod search-repositories ((search-string string))
   "Search github repositories for SEARCH-STRING."
   (slot-value (to-json (github-simple-request "repos" "search" search-string))
               'repositories))
@@ -576,8 +569,7 @@ ID can be either a string or a positive number."
 (defmethod show-repository ((username string) repository &key login token)
   "Show information on USERNAME's REPONAME."
   (slot-value
-   (to-json (github-request :login login :token token :auth :default
-                            :parameters `("repos" "show" ,username ,repository)))
+   (to-json (request login token `("repos" "show" ,username ,repository)))
               'repository))
 
 (defmethod user-repositories ((username string))
@@ -589,24 +581,21 @@ ID can be either a string or a positive number."
   "Watch REPOSITORY owned by USERNAME."
   (slot-value
    (to-json
-    (github-request :login login :token token :auth :default 
-                           :parameters `("repos" "watch" ,username ,repository)))
+    (request login token `("repos" "watch" ,username ,repository)))
    'repository))
 
 (defmethod unwatch ((username string) (repository string) &key login token)
   "Stop watching REPOSITORY owned by USERNAME."
   (slot-value
    (to-json
-    (github-authed-request :login login :token token :auth :default
-                           :parameters `("repos" "unwatch" ,username ,repository)))
+    (authed-request login token `("repos" "unwatch" ,username ,repository)))
    'repository))
 
 (defmethod fork ((username string) (repository string) &key login token)
   "Fork REPOSITORY owned by USERNAME."
   (slot-value
    (to-json
-    (github-request :login login :token token :auth :force
-                    :parameters `("repos" "fork" ,username ,repository)))
+    (authed-request login token `("repos" "fork" ,username ,repository)))
    'repository))
 
 (defmethod create-repository ((repository string) &key login token
@@ -645,67 +634,61 @@ These are basically read only ssh keys."
 
 (defmethod collaborators ((username string) (repository string) &key login token)
   "List collaborators on REPOSITORY owned by USERNAME."
-  (json->class (github-request :login login :token token :auth :default 
-                               :parameters `("repos" "show" ,username
-                                                     ,repository "collaborators"))
+  (json->class (request login token `("repos" "show" ,username
+                                              ,repository "collaborators"))
                'collaborators))
 
 (defmethod add-collaborator ((username string) (repository string) &key login token)
   "Add USERNAME to the collaborators list of REPOSITORY."
   (json->class
-   (github-authed-request :login login :token token :auth :default
-                          :parameters `("repos" "collaborators" ,repository
-                                                "add" ,username))
+   (authed-request login token `("repos" "collaborators" ,repository
+                                         "add" ,username))
    'collaborators))
 
 (defmethod remove-collaborator ((username string) (repository string) &key login token)
   "Remove USERNAME from the collaborators list of REPOSITORY."
   (json->class
-   (github-authed-request :login login :token token :auth :default
-                          :parameters `("repos" "collaborators" ,repository
+   (authed-request login token `("repos" "collaborators" ,repository
                                                 "remove" ,username))
    'collaborators))
 
 (defmethod show-network ((username string) (repository string) &key login token)
   "Show at network of USERNAME's REPOSITORY."
   (slot-value
-   (to-json (github-request :login login :token token :auth :default
-             :parameters `("repos" "show" ,username ,repository "network")))
+   (to-json (authed-request login token `("repos" "show" ,username
+                                                  ,repository "network")))
    'network))
 
 (defmethod show-languages ((username string) (repository string) &key login token)
   "List REPOSITORY's languages."
   (declare (type string username repository))
-  (json->class (github-request :login login :token token :auth :default
-                               :parameters `("repos" "show" ,username ,repository "languages"))
+  (json->class (request login token `("repos" "show" ,username
+                                              ,repository "languages"))
                'languages))
 
 (defmethod show-tags ((username string) (repository string) &key login token)
   "List REPOSITORY's tags."
-  (json->class (github-request :login login :token token :auth :default
-                               :parameters `("repos" "show" ,username ,repository "tags"))
+  (json->class (request login token `("repos" "show" ,username ,repository "tags"))
                'tags))
 
 (defmethod show-branches ((username string) (repository string) &key login token)
   "List REPOSITORY's remote branches."
-  (json->class (github-request :login login :token token :auth :default
-                               :parameters `("repos" "show" ,username ,repository "branches"))
+  (json->class
+   (request login token `("repos" "show" ,username ,repository "branches"))
                'branches))
 
 (defmethod show-commits ((username string) (repository string) (branch string)
                          &key file login token)
   "List commits in USERNAME's REPOSITORY on BRANCH optionally for FILE."
   (slot-value
-   (to-json (github-request :login login :token token :auth :default
-                            :parameters `("commits" "list" ,username
+   (to-json (request login token `("commits" "list" ,username
                                                     ,repository ,branch ,file)))
    'commits))
 
 (defmethod show-commit ((username string) (repository string) (sha string)
                         &key login token)
   "Show data for commit identified by SHA on USERNAME's REPOSITORY."
-  (slot-value (to-json (github-request :login login :token token :auth :default
-                                       :parameters `("commits" "show" ,username
+  (slot-value (to-json (request login token `("commits" "show" ,username
                                                                ,repository ,sha)))
               'commit))
 
