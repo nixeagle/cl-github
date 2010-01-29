@@ -174,6 +174,13 @@ Otherwise, create a FLUID-OBJECT with slots interned in
             (concatenate 'string prior "/" new))
           (cons +github-api-url+ parameters)))
 
+(defmethod make-object :before (bindings
+                                (class (eql nil))
+                                &optional superclasses)
+  "Debug helper to print the keys of BINDINGS."
+  (write (mapcar #'car bindings)
+         :case :downcase))
+
 ;;; API calls
 (defun show-user (user)
   (slot-value (to-json (github-request "user" "show" user)) 'user))
