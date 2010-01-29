@@ -27,6 +27,14 @@ When parsing the plan json object, this will be set to \"USER\".")
     (drakma:http-request (apply #'build-github-api-url parameters)
                          :want-stream t)))
 
+(defun github-request->alist (&rest parameters)
+  "Ask github about PARAMETERS and return them as an alist."
+  (let ((result (apply #'github-request parameters)))
+    (prog1 (with-decoder-simple-list-semantics
+             (let ((json:*json-symbols-package* :nisp.github))
+               (decode-json result))) 
+      (close result))))
+
 (defmacro with-github-content-types (&body body)
   "Evaluate BODY treating application/json as text."
   `(let ((drakma:*text-content-types* '(("application" . "json")
