@@ -372,4 +372,13 @@ slots."))
   (declare (type string username))
   (not-done username repositories))
 
+(defun create-repository (repository &key
+                          description homepage
+                          ;; Default to public.
+                          (public 1))
+  "Create new REPOSITORY."
+  (declare (type string repository description homepage)
+           (type (integer 0 1) public))
+  (not-done repository description homepage public))
+
 ;;; End file
