@@ -615,4 +615,32 @@ These are basically read only ssh keys."))
                              :nethash network-meta
                              :start start
                              :end end))))
+
+;;; Issues API
+(defgeneric search-issues (username repository state term &key login token)
+  (:documentation "Search for TERM with STATE on USERNAME's REPOSITORY."))
+(defgeneric show-issues (username repository state &key login token)
+  (:documentation "Show all issues with STATE on USERNAME's REPOSITORY."))
+(defgeneric show-issue (username repository issue &key login token)
+  (:documentation "Show ISSUE on USERNAME's REPOSITORY."))
+(defgeneric open-issue (username repository title body &key login token)
+  (:documentation "Open issue about TITLE with BODY on USERNAME's REPOSITORY."))
+(defgeneric close-issue (username repository issue &key login token)
+  (:documentation "Close ISSUE on USERNAME's REPOSITORY."))
+(defgeneric reopen-issue (username repository issue &key login token)
+  (:documentation "Reopen ISSUE on USERNAME's REPOSITORY."))
+(defgeneric edit-issue (username repository issue title body &key login token)
+  (:documentation "Edit ISSUE setting TITLE and BODY on USERNAME's REPOSITORY.
+
+Editing an issue causes your TITLE and BODY to completely replace the
+original TITLE and BODY."))
+(defgeneric show-labels (username repository &key login token)
+  (:documentation "Show issue labels for USERNAME's REPOSITORY."))
+(defgeneric add-label (username repository label issue &key login token)
+  (:documentation "Add LABEL to ISSUE on USERNAME's REPOSITORY."))
+(defgeneric remove-label (username repository label issue &key login token)
+  (:documentation "Remove LABEL from ISSUE on USERNAME's REPOSITORY."))
+(defgeneric add-comment (username repository issue comment &key login token)
+  (:documentation "Add COMMENT to ISSUE on USERNAME's REPOSITORY."))
+
 ;;; End file
