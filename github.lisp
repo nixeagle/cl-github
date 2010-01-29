@@ -217,6 +217,11 @@ slots."))
   (name sha mode type) 
   (:documentation "Treeish git object that we get from github."))
 
+(defclass blocks ()
+  (name count start)
+  (:documentation "Blocks of something that github gives when querying
+the network api."))
+
 ;;; utils
 (defun build-github-api-url (&rest parameters)
   "Build a request url using PARAMETERS."
