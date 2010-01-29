@@ -358,13 +358,13 @@ slots."))
 (defun show-followers (username)
   "List all followers of USERNAME."
   (declare (type string username))
-  (json->class (github-request "user" "show" username "followers")
+  (json->class (github-simple-request "user" "show" username "followers")
                'followers))
 
 (defun show-following (username)
   "List all users that USERNAME follows."
   (declare (type string username))
-  (json->class (github-request "user" "show" username "following")
+  (json->class (github-simple-request "user" "show" username "following")
                'following))
 
 (defun follow-user (username &key login token)
