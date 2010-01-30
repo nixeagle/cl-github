@@ -426,7 +426,7 @@ These are basically read only ssh keys."))
   (slot-value (to-json (github-simple-request "repos" "search" search-string))
               'repositories))
 
-(defmethod show-repository ((username string) repository &key login token)
+(defmethod show-repository ((username string) (repository string) &key login token)
   (slot-value
    (to-json (request login token `("repos" "show" ,username ,repository)))
    'repository))
