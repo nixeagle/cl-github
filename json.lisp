@@ -98,7 +98,10 @@ Otherwise, create a FLUID-OBJECT with slots interned in
           (when (and *previous-prototype* (not class))
             (push (cons json::*prototype-name* *previous-prototype*) bindings))
           (print class)
-          (json:make-object bindings class)))))
+          (print bindings)
+          (if (and (not class) (listp bindings) (not (consp (cdr bindings))))
+              (cdar bindings)
+              (json:make-object bindings class))))))
 
 (defmacro with-github-decoder (&body body)
   "Execute BODY with decoder bindings appropriate for github's api."

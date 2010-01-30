@@ -362,16 +362,16 @@ These are basically read only ssh keys."))
                       &key login token name blog email company location)
   ;; Not going to export this right now, I want to make this more lisp
   ;; like by using setf.
-  (slot-value (to-json (github-request :parameters `("user" "show" ,user)
-                                       :auth (when (string= user *default-login*)
-                                               :force)
-                                       :login login
-                                       :token token
-                                       :values\[blog\] blog
-                                       :values\[name\] name
-                                       :values\[email\] email
-                                       :values\[company\] company
-                                       :values\[location\] location)) 'user))
+  (to-json (github-request :parameters `("user" "show" ,user)
+                           :auth (when (string= user *default-login*)
+                                   :force)
+                           :login login
+                           :token token
+                           :values\[blog\] blog
+                           :values\[name\] name
+                           :values\[email\] email
+                           :values\[company\] company
+                           :values\[location\] location)))
 
 (defmethod show-followers ((username string))
   (json->list (github-simple-request "user" "show" username "followers")))
@@ -387,9 +387,7 @@ These are basically read only ssh keys."))
   (json->list (authed-request login token `("user" "unfollow" ,username))))
 
 (defmethod watched-repositories ((username string))
-  (slot-value
-   (to-json (github-simple-request "repos" "watched" username))
-   'repositories))
+  (to-json (github-simple-request "repos" "watched" username)))
 
 (defmethod user-emails (&key login token)
   (json->list (authed-request login token '("user" "emails"))))
@@ -403,62 +401,45 @@ These are basically read only ssh keys."))
                               :email email)))
 
 (defmethod user-keys (&key login token)
-  (slot-value (to-json (authed-request login token '("user" "keys")))
-              'public-keys))
+  (to-json (authed-request login token '("user" "keys"))))
 
 (defmethod add-user-key ((name string) (key string) &key login token)
-  (slot-value (to-json (authed-request login token '("user" "key" "add")
-                                       :name name :key key))
-              'public-keys))
+  (to-json (authed-request login token '("user" "key" "add")
+                           :name name :key key)))
 
 (defmethod remove-user-key ((id string) &key login token)
-  (slot-value (to-json (authed-request login token '("user" "key" "remove")
-                                       :id (princ-to-string id)))
-              'public-keys))
-
+  (to-json (authed-request login token '("user" "key" "remove")
+                           :id (princ-to-string id))))
 
 (defmethod search-users ((username string))
-  (slot-value (to-json (github-simple-request "user" "search" username))
-              'users))
+  (to-json (github-simple-request "user" "search" username)))
 
 ;;; Repositories
 (defmethod search-repositories ((search-string string))
-  (slot-value (to-json (github-simple-request "repos" "search" search-string))
-              'repositories))
+  (to-json (github-simple-request "repos" "search" search-string)))
 
 (defmethod show-repository ((username string) (repository string) &key login token)
-  (slot-value
-   (to-json (request login token `("repos" "show" ,username ,repository)))
-   'repository))
+  (to-json (request login token `("repos" "show" ,username ,repository))))
 
 (defmethod user-repositories ((username string))
-  (slot-value (to-json (github-simple-request "repos" "show" username))
-              'repositories))
+  (to-json (github-simple-request "repos" "show" username)))
 
 (defmethod watch ((username string) (repository string) &key login token)
-  (slot-value
-   (to-json
-    (request login token `("repos" "watch" ,username ,repository)))
-   'repository))
+  (to-json (request login token `("repos" "watch" ,username ,repository))))
 
 (defmethod unwatch ((username string) (repository string) &key login token)
-  (slot-value (to-json (authed-request login token
-                                       `("repos" "unwatch" ,username ,repository)))
-              'repository))
+  (to-json (authed-request login token `("repos" "unwatch" ,username ,repository))))
 
 (defmethod fork ((username string) (repository string) &key login token)
-  (slot-value (to-json (authed-request login token
-                                       `("repos" "fork" ,username ,repository)))
-              'repository))
+  (to-json (authed-request login token `("repos" "fork" ,username ,repository))))
 
 (defmethod create-repository ((repository string) &key login token
                               description homepage public)
-  (slot-value (to-json (authed-request login token '("repos" "create")
-                                       :name repository
-                                       :description description
-                                       :homepage homepage
-                                       :public public))
-              'repository))
+  (to-json (authed-request login token '("repos" "create")
+                           :name repository
+                           :description description
+                           :homepage homepage
+                           :public public)))
 
 (defmethod delete-repository ((repository string) &key login token)
   (flet ((del-repo (&optional delete-token)
@@ -469,32 +450,23 @@ These are basically read only ssh keys."))
     (del-repo (del-repo))))
 
 (defmethod set-repository-private ((repository string) &key login token)
-  (slot-value (to-json (authed-request login token
-                                       `("repos" "set" "private" ,repository)))
-              'repository))
+  (to-json (authed-request login token `("repos" "set" "private" ,repository))))
 
 (defmethod set-repository-public ((repository string) &key login token)
-  (slot-value (to-json (authed-request login token
-                                       `("repos" "set" "public" ,repository)))
-              'repository))
+  (to-json (authed-request login token `("repos" "set" "public" ,repository))))
 
 (defmethod deploy-keys ((repository string) &key login token)
-  (slot-value (to-json (authed-request login token `("repos" "keys" ,repository)))
-              'public-keys))
+  (to-json (authed-request login token `("repos" "keys" ,repository))))
 
 (defmethod add-deploy-key ((repository string) (title string)
                            (key string) &key login token)
-  (slot-value (to-json (authed-request login token `("repos" "key" ,repository
-                                                             "add")
-                                       :title title
-                                       :key key))
-              'public-keys))
+  (to-json (authed-request login token `("repos" "key" ,repository "add")
+                           :title title :key key)))
 
 (defmethod remove-deploy-key ((repository string) (id string) &key login token)
-  (slot-value (to-json (authed-request login token `("repos" "key" ,repository
-                                                             "remove")
-                                       :id id))
-              'public-keys))
+  (to-json (authed-request login token `("repos" "key" ,repository "remove")
+                           :id id)))
+
 (defmethod remove-deploy-key ((repository string) (id integer) &key login token)
   (remove-deploy-key repository (princ-to-string id) :login login :token token))
 
@@ -514,10 +486,8 @@ These are basically read only ssh keys."))
                                          "remove" ,username))))
 
 (defmethod show-network ((username string) (repository string) &key login token)
-  (slot-value
-   (to-json (authed-request login token `("repos" "show" ,username
-                                                  ,repository "network")))
-   'network))
+  (to-json (authed-request login token `("repos" "show" ,username
+                                                 ,repository "network"))))
 
 (defmethod show-languages ((username string) (repository string) &key login token)
   (json->class (request login token `("repos" "show" ,username
@@ -534,16 +504,12 @@ These are basically read only ssh keys."))
 
 (defmethod show-commits ((username string) (repository string) (branch string)
                          &key file login token)
-  (slot-value
-   (to-json (request login token `("commits" "list" ,username
-                                             ,repository ,branch ,file)))
-   'commits))
+  (to-json (request login token `("commits" "list" ,username
+                                            ,repository ,branch ,file))))
 
 (defmethod show-commit ((username string) (repository string) (sha string)
                         &key login token)
-  (slot-value (to-json (request login token `("commits" "show" ,username
-                                                        ,repository ,sha)))
-              'commit))
+  (to-json (request login token `("commits" "show" ,username ,repository ,sha))))
 
 ;;; Object API
 (defgeneric show-tree (username repository tree &key login token)
@@ -555,16 +521,11 @@ These are basically read only ssh keys."))
 
 (defmethod show-tree ((username string) (repository string)
                       (tree string) &key login token)
-  (slot-value (to-json (request login token `("tree" "show" ,username
-                                                     ,repository ,tree)))
-              'tree))
+  (to-json (request login token `("tree" "show" ,username ,repository ,tree))))
 
 (defmethod show-blob ((username string) (repository string)
                       (path string) (tree string) &key login token)
-  (slot-value (to-json (request login token `("blob" "show" ,username
-                                                     ,repository ,tree
-                                                     ,path)))
-              'blob))
+  (to-json (request login token `("blob" "show" ,username ,repository ,tree ,path))))
 
 (defmethod show-raw-blob ((username string) (repository string)
                           (sha string) &key login token)
@@ -636,65 +597,41 @@ original TITLE and BODY."))
 (defmethod search-issues ((username string) (repository string)
                           (state string) (term string)
                           &key login token)
-  (slot-value (to-json (request login token
-                                `("issues" "search" ,username
-                                           ,repository ,state ,term)))
-              'issues))
+  (to-json (request login token `("issues" "search" ,username
+                                           ,repository ,state ,term))))
 
 (defmethod show-issues ((username string) (repository string)
                         (state string) &key login token)
-  (slot-value (to-json (request login token `("issues" "list" ,username
-                                                       ,repository ,state)))
-              'issues))
+  (to-json (request login token `("issues" "list" ,username ,repository ,state))))
 
 (defmethod show-issue ((username string) (repository string)
                        (issue string) &key login token)
-  (slot-value (to-json (request login token `("issues" "show" ,username
-                                                       ,repository ,issue)))
-              'issue))
+  (to-json (request login token `("issues" "show" ,username ,repository ,issue))))
 
 (defmethod open-issue ((username string) (repository string)
                        (title string) (body string)
                        &key login token)
-  (slot-value (to-json (authed-request login token
-                                       `("issues" "open"
-                                                  ,username
-                                                  ,repository)
-                                       :title title
-                                       :body body))
-              'issue))
+  (to-json (authed-request login token `("issues" "open" ,username ,repository)
+                           :title title :body body)))
 
 (defmethod close-issue ((username string) (repository string)
                         (issue string)
                         &key login token)
-  (slot-value (to-json (authed-request login token
-                                       `("issues" "close"
-                                                  ,username
-                                                  ,repository
-                                                  ,issue)))
-              'issue))
+  (to-json (authed-request login token `("issues" "close" ,username
+                                                  ,repository ,issue))))
 
 (defmethod reopen-issue ((username string) (repository string)
                          (issue string)
                          &key login token)
-  (slot-value (to-json (authed-request login token
-                                       `("issues" "reopen"
-                                                  ,username
-                                                  ,repository
-                                                  ,issue)))
-              'issue))
+  (to-json (authed-request login token `("issues" "reopen" ,username
+                                                  ,repository ,issue))))
 
 (defmethod edit-issue ((username string) (repository string)
                        (title string) (body string) (issue string)
                        &key login token)
-  (slot-value (to-json (authed-request login token
-                                       `("issues" "edit"
-                                                  ,username
-                                                  ,repository
-                                                  ,issue)
-                                       :title title
-                                       :body body))
-              'issue))
+  (to-json (authed-request login token `("issues" "edit" ,username
+                                                  ,repository ,issue)
+                           :title title :body body)))
 
 (defmethod show-labels ((username string) (repository string)
                         &key login token)
@@ -720,10 +657,8 @@ original TITLE and BODY."))
 (defmethod add-comment ((username string) (repository string)
                         (comment string) (issue string)
                         &key login token)
-  (slot-value (to-json (authed-request login token
-                                       `("issues" "comment" ,username
+  (to-json (authed-request login token `("issues" "comment" ,username
                                                   ,repository ,issue)
-                                       :comment comment))
-              'comment))
+                           :comment comment)))
 
 ;;; End file
