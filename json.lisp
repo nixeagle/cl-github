@@ -144,6 +144,12 @@ Otherwise, create a FLUID-OBJECT with slots interned in
                        (decode-json object)))))
 (defmethod json->list :after ((object stream))
   (close object))
+
+(defgeneric json->element (object)
+  (:documentation "Return first element of OBJECT's json conversion result."))
+(defmethod json->element ((object stream))
+  (car (json->list object)))
+
 (defgeneric json->class (object class)
   (:documentation "Store json in OBJECT to CLASS"))
 
