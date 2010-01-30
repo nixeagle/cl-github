@@ -9,7 +9,8 @@
 
 (defun beginning-of-object ()
   "Do more at prototype init"
-  (setq *previous-prototype* *current-prototype*) (setq *current-prototype* nil)
+  (setq *previous-prototype* *current-prototype*)
+  (setq *current-prototype* nil)
   (json::init-accumulator-and-prototype))
 
 (defun camel-case-to-lisp (string)
@@ -61,19 +62,22 @@ Otherwise, do the same as ACCUMULATOR-ADD-VALUE."))
     object)
   (:documentation "Get the symbolic representation of object."))
 
-;;; Modified from cl-json 
-(defun accumulator-get-object ()
-  "Return a CLOS object, using keys and values accumulated so far in
+(defgeneric accumulator-get-object ()
+  (:documentation
+   "Return a CLOS object, using keys and values accumulated so far in
 the list accumulator as slot names and values, respectively.  If the
 JSON Object had a prototype field infer the class of the object and
 the package wherein to intern slot names from the prototype.
 Otherwise, create a FLUID-OBJECT with slots interned in
-*JSON-SYMBOLS-PACKAGE*."
+*JSON-SYMBOLS-PACKAGE*."))
+
+;;; Modified from cl-json 
+(defmethod accumulator-get-object ()
   (flet ((intern-keys (bindings)
            (loop for (key . value) in bindings
               collect (cons (json:json-intern key) value))))
     (if (typep *previous-prototype* 'json::prototype)
-         (with-slots (lisp-class lisp-superclasses lisp-package)
+        (with-slots (lisp-class lisp-superclasses lisp-package)
             *previous-prototype*
           (let* ((package-name (as-symbol lisp-package))
                  (json:*json-symbols-package*
@@ -85,7 +89,7 @@ Otherwise, create a FLUID-OBJECT with slots interned in
                  (superclasses (mapcar #'as-symbol lisp-superclasses)))
             (json::maybe-add-prototype
              (json:make-object (intern-keys (cdr json::*accumulator*))
-                          class superclasses)
+                               class superclasses)
              *previous-prototype*)))
         (let ((bindings (intern-keys (cdr json::*accumulator*)))
               (class (if (stringp *previous-prototype*) (as-symbol *previous-prototype*))))
