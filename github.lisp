@@ -411,18 +411,15 @@ These are basically read only ssh keys."))
    'repositories))
 
 (defmethod user-emails (&key login token)
-  (json->class (authed-request login token '("user" "emails"))
-               'emails))
+  (cdar (json->alist (authed-request login token '("user" "emails")))))
 
 (defmethod add-user-email ((email string) &key login token)
-  (json->class (authed-request login token '("user" "email" "add")
-                               :email email)
-               'emails))
+  (cdar (json->alist (authed-request login token '("user" "email" "add")
+                                     :email email))))
 
 (defmethod remove-user-email ((email string) &key login token)
-  (json->class (authed-request login token '("user" "email" "remove")
-                               :email email)
-               'emails))
+  (cdar (json->alist (authed-request login token '("user" "email" "remove")
+                                     :email email))))
 
 (defmethod user-keys (&key login token)
   (slot-value (to-json (authed-request login token '("user" "keys")))
