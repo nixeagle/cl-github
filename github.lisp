@@ -541,8 +541,8 @@ These are basically read only ssh keys."))
                                                     ,repository "tags"))))
 
 (defmethod show-branches ((username string) (repository string) &key login token)
-  (cdar (json->alist
-         (request login token `("repos" "show" ,username ,repository "branches")))))
+  (json->list
+   (request login token `("repos" "show" ,username ,repository "branches"))))
 
 (defmethod show-commits ((username string) (repository string) (branch string)
                          &key file login token)
