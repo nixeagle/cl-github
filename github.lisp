@@ -399,13 +399,11 @@ These are basically read only ssh keys."))
   (cdar (json->alist (github-simple-request "user" "show" username "following"))))
 
 (defmethod follow ((username string) &key login token)
-  (json->class (authed-request login token `("user" "follow" ,username))
-               'following))
+  (cdar (json->alist (authed-request login token `("user" "follow" ,username)))))
                
 (defmethod unfollow ((username string) &key login token)
   ;; Github seems to ignore this request.
-  (json->class (authed-request login token `("user" "unfollow" ,username))
-               'following))
+  (cdar (json->alist (authed-request login token `("user" "unfollow" ,username)))))
 
 (defmethod watched-repositories ((username string))
   (slot-value
