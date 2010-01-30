@@ -732,4 +732,13 @@ original TITLE and BODY."))
                     `("issues" "labels" ,username ,repository))
                'issue-labels))
 
+(defmethod add-label ((username string) (repository string)
+                      (label string) (issue string)
+                      &key login token)
+  (json->class (authed-request login token
+                           `("issues" "label" "add"
+                                      ,username ,repository
+                                      ,label ,issue))
+               'issue-labels))
+
 ;;; End file
