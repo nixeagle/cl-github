@@ -133,6 +133,17 @@ Otherwise, create a FLUID-OBJECT with slots interned in
 (defmethod json->alist :after ((object stream))
   (close object))
 
+(defun ensure-list (object)
+  "Ensure OBJECT is a list."
+  (the list (if (listp object)
+                object
+                (list object))))
+(defgeneric json->list (object))
+(defmethod json->list ((object stream))
+  (ensure-list (cdar (with-decoder-simple-list-semantics
+                       (decode-json object)))))
+(defmethod json->list :after ((object stream))
+  (close object))
 (defgeneric json->class (object class)
   (:documentation "Store json in OBJECT to CLASS"))
 
