@@ -10,11 +10,10 @@
   :maintainer "James S <i@nixeagle.org>"
   :license "GPLv3 or later"
   :depends-on (:iterate
-                :cxml-stp
-                :closure-html
                 :drakma
                 :flexi-streams
                 :cl-json
+                :closure-html
                 :nisp.util)
   :serial t
   :components
