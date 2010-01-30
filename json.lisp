@@ -11,8 +11,8 @@ ALIST. Hash table is initialized using the HASH-TABLE-INITARGS."
 
 (defparameter +github-class-map+
   (alist-hash-table '(("USER" . "USER") ("PLAN" . "PLAN") ("AUTHOR" . "SIMPLE-USER")
-                      ("PARENTS" . "PARENTS") ("COMMIT" . "COMMIT")
-                      ("MODIFIED" . "MODIFIED") ("COMMITTER" . "SIMPLE-USER")
+                      ("PARENTS" . "PARENT") ("COMMIT" . "COMMIT")
+                      ("MODIFIED" . "FILE-DIFF") ("COMMITTER" . "SIMPLE-USER")
                       ("DELETE-TOKEN" . "DELETE-TOKEN") ("TREE" . "TREE")
                       ("BLOB" . "BLOB") ("BLOCKS" . "BLOCKS")
                       ("HEADS" . "HEADS") ("COMMITS" . "COMMITS")

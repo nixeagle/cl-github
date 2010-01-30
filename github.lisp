@@ -155,7 +155,7 @@ slots."))
   ((languages :reader languages))
   (:documentation "List of languages."))
 
-(defclass parents ()
+(defclass parent ()
   (id)
   ;; Yes this is a little strange... but this is how github does it, it
   ;; can be cleaned up later.
@@ -175,7 +175,7 @@ slots."))
          authored-date message tree committer)
   (:documentation "Detailed information on a commit."))
 
-(defclass modified ()
+(defclass file-diff ()
   (diff filename)
   (:documentation "Modification information for a commit."))
 
@@ -652,5 +652,16 @@ original TITLE and BODY."))
   (to-json (authed-request login token `("issues" "comment" ,username
                                                   ,repository ,issue)
                            :comment comment)))
+
+(defpackage #:nisp.github-extra
+  (:use :cl :iterate :nisp.github)
+  (:export #:show-followers-not-followed))
+(in-package :nisp.github-extra)
+;;; Extra
+(defun show-followers-not-followed (username)
+  "Show followers that USERNAME is not following."
+  ;; Thanks to scott olson for the idea.
+  (set-difference (show-followers username) (show-following username)
+                  :test #'equal))
 
 ;;; End file
