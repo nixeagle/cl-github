@@ -669,4 +669,9 @@ original TITLE and BODY."))
                                                        ,repository ,state)))
               'issues))
 
+(defmethod show-issue ((username string) (repository string)
+                       (issue string) &key login token)
+  (slot-value (to-json (request login token `("issues" "show" ,username
+                                                       ,repository ,issue)))
+              'issue))
 ;;; End file
