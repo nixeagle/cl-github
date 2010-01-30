@@ -1,11 +1,30 @@
 (in-package :nisp.github)
 
-(defparameter +github-api-class-strings+
-  '("USER" "PLAN" "AUTHOR" "PARENTS" "COMMIT"
-    "MODIFIED" "COMMITTER" "DELETE-TOKEN"
-    "TREE" "BLOB" "BLOCKS" "HEADS" "COMMITS"
-    "REPOSITORY" "PUBLIC-KEYS" "REPOSITORIES"
-    "NETWORK" "USERS" "ISSUES" "ISSUE" "COMMENT"))
+;;; From Alexandria
+(defun alist-hash-table (alist &rest hash-table-initargs)
+  "Returns a hash table containing the keys and values of the association list
+ALIST. Hash table is initialized using the HASH-TABLE-INITARGS."
+  (let ((table (apply #'make-hash-table hash-table-initargs)))
+    (dolist (cons alist)
+      (setf (gethash (car cons) table) (cdr cons)))
+    table))
+
+(defparameter +github-class-map+
+  (alist-hash-table '(("USER" . "USER") ("PLAN" . "PLAN") ("AUTHOR" . "AUTHOR")
+                      ("PARENTS" . "PARENTS") ("COMMIT" . "COMMIT")
+                      ("MODIFIED" . "MODIFIED") ("COMMITTER" . "COMMITTER")
+                      ("DELETE-TOKEN" . "DELETE-TOKEN") ("TREE" . "TREE")
+                      ("BLOB" . "BLOB") ("BLOCKS" . "BLOCKS")
+                      ("HEADS" . "HEADS") ("COMMITS" . "COMMITS")
+                      ("REPOSITORY" . "REPOSITORY")
+                      ("PUBLIC-KEYS" . "PUBLIC-KEYS")
+                      ("REPOSITORIES" . "REPOSITORIES")
+                      ("NETWORK" . "NETWORK") ("USERS" . "USERS")
+                      ("ISSUES" . "ISSUES") ("ISSUE" . "ISSUE")
+                      ("COMMENT" . "COMMENT"))
+                    :test #'equal)
+  "mapping of class strings to real classes.")
+
 
 (defun beginning-of-object ()
   "Do more at prototype init"
@@ -24,15 +43,16 @@
   (:documentation "Mark KEY a prototype if it is, and add it to the accumulator."))
 (defmethod key-add-or-set (key)
   (let ((key (funcall #'camel-case-to-lisp key)))
-    (if (and (not *current-prototype*)
-             (member key +github-api-class-strings+ :test #'equal))
-        (progn (setq json::*accumulator-last*
-                     (setf (cdr json::*accumulator-last*) (cons (cons key nil) nil)))
-               (setq *current-prototype* key)
-              #+ () (pushnew (cons "PROTOTYPE" key) (cddr json::*accumulator*))
-              (setq json::*prototype* key))
-        (setq json::*accumulator-last*
-              (setf (cdr json::*accumulator-last*) (cons (cons key nil) nil))))
+    (let ((class-key (gethash key +github-class-map+ nil)))
+      (if (and (not *current-prototype*)
+               class-key)
+          (progn (setq json::*accumulator-last*
+                       (setf (cdr json::*accumulator-last*) (cons (cons class-key nil) nil)))
+                 (setq *current-prototype* class-key)
+                 #+ () (pushnew (cons "PROTOTYPE" key) (cddr json::*accumulator*))
+                 (setq json::*prototype* class-key))
+          (setq json::*accumulator-last*
+                (setf (cdr json::*accumulator-last*) (cons (cons key nil) nil)))))
     json::*accumulator*))
 
 (defgeneric value-add-or-set (value)
@@ -46,7 +66,6 @@ Otherwise, do the same as ACCUMULATOR-ADD-VALUE."))
         (check-type value (or json::prototype string)
                     (format nil "Invalid prototype: ~S." value))
         (setq json::*prototype* *current-prototype*)
-        (print "here")
         json::*accumulator*)
       (json::accumulator-add-value value)))
 
