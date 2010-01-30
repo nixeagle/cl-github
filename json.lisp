@@ -47,7 +47,7 @@ ALIST. Hash table is initialized using the HASH-TABLE-INITARGS."
       (if (and (not *current-prototype*)
                class-key)
           (progn (setq json::*accumulator-last*
-                       (setf (cdr json::*accumulator-last*) (cons (cons class-key nil) nil)))
+                       (setf (cdr json::*accumulator-last*) (cons (cons key nil) nil)))
                  (setq *current-prototype* class-key)
                  #+ () (pushnew (cons "PROTOTYPE" key) (cddr json::*accumulator*))
                  (setq json::*prototype* class-key))
