@@ -68,7 +68,7 @@ When parsing the plan json object, this will be set to \"USER\".")
          :parameters uri-parameters args))
 
 (defun authed-request (login token uri-parameters &rest args &key
-                &allow-other-keys)
+                       &allow-other-keys)
   (apply #'github-request :login login :token token :auth :force 
          :parameters uri-parameters args))
 
@@ -97,6 +97,8 @@ When parsing the plan json object, this will be set to \"USER\".")
                      (not (eq :want-string key)))
             (collect (cons (dash-to-underscore
                             (string-downcase (symbol-name key))) value))))))
+
+;;; Class related generics.
 
 ;;; JSON classes
 (defclass user ()
@@ -393,17 +395,17 @@ These are basically read only ssh keys."))
                                        :values\[location\] location)) 'user))
 
 (defmethod show-followers ((username string))
-  (cdar (json->alist (github-simple-request "user" "show" username "followers"))))
+  (json->list (github-simple-request "user" "show" username "followers"))))
 
 (defmethod show-following ((username string))
-  (cdar (json->alist (github-simple-request "user" "show" username "following"))))
+  (json->list (github-simple-request "user" "show" username "following"))))
 
 (defmethod follow ((username string) &key login token)
-  (cdar (json->alist (authed-request login token `("user" "follow" ,username)))))
+  (json->list (authed-request login token `("user" "follow" ,username)))))
                
 (defmethod unfollow ((username string) &key login token)
   ;; Github seems to ignore this request.
-  (cdar (json->alist (authed-request login token `("user" "unfollow" ,username)))))
+  (json->list (authed-request login token `("user" "unfollow" ,username)))))
 
 (defmethod watched-repositories ((username string))
   (slot-value
@@ -411,15 +413,15 @@ These are basically read only ssh keys."))
    'repositories))
 
 (defmethod user-emails (&key login token)
-  (cdar (json->alist (authed-request login token '("user" "emails")))))
+  (json->list (authed-request login token '("user" "emails")))))
 
 (defmethod add-user-email ((email string) &key login token)
-  (cdar (json->alist (authed-request login token '("user" "email" "add")
-                                     :email email))))
+  (json->list (authed-request login token '("user" "email" "add")
+                              :email email))))
 
 (defmethod remove-user-email ((email string) &key login token)
-  (cdar (json->alist (authed-request login token '("user" "email" "remove")
-                                     :email email))))
+  (json->list (authed-request login token '("user" "email" "remove")
+                              :email email))))
 
 (defmethod user-keys (&key login token)
   (slot-value (to-json (authed-request login token '("user" "keys")))
@@ -448,7 +450,7 @@ These are basically read only ssh keys."))
 (defmethod show-repository ((username string) repository &key login token)
   (slot-value
    (to-json (request login token `("repos" "show" ,username ,repository)))
-              'repository))
+   'repository))
 
 (defmethod user-repositories ((username string))
   (slot-value (to-json (github-simple-request "repos" "show" username))
@@ -473,20 +475,17 @@ These are basically read only ssh keys."))
 (defmethod create-repository ((repository string) &key login token
                               description homepage public)
   (slot-value (to-json (authed-request login token '("repos" "create")
-                            :name repository
-                            :description description
-                            :homepage homepage
-                            :public public))
+                                       :name repository
+                                       :description description
+                                       :homepage homepage
+                                       :public public))
               'repository))
 
-(defmethod delete-repository ((repository string) &key login token)
-  (let ((delete-token (json->class (authed-request login token
-                                                   `("repos" "delete" ,repository))
-                                    'delete-token)))
-    (json->class (authed-request login token
-                                 `("repos" "delete" ,repository)
-                                 :delete-token (delete-token delete-token))
-                 'status)))
+(defmethod delete-repository ((repository string) &key delete-token login token)
+  (json->element
+   (authed-request login token
+                   `("repos" "delete" ,repository)
+                   :delete-token (delete-repository repository))))
 
 (defmethod set-repository-private ((repository string) &key login token)
   (slot-value (to-json (authed-request login token
@@ -520,7 +519,7 @@ These are basically read only ssh keys."))
 
 (defmethod show-collaborators ((username string) (repository string)
                                &key login token)
-  (cdar (json->alist (request login token `("repos" "show" ,username
+  (json->list (request login token `("repos" "show" ,username
                                                     ,repository "collaborators")))))
 
 (defmethod add-collaborator ((username string) (repository string) &key login token)
@@ -545,7 +544,7 @@ These are basically read only ssh keys."))
                'languages))
 
 (defmethod show-tags ((username string) (repository string) &key login token)
-  (cdar (json->alist (request login token `("repos" "show" ,username
+  (json->list (request login token `("repos" "show" ,username
                                                     ,repository "tags")))))
 
 (defmethod show-branches ((username string) (repository string) &key login token)
@@ -556,13 +555,13 @@ These are basically read only ssh keys."))
                          &key file login token)
   (slot-value
    (to-json (request login token `("commits" "list" ,username
-                                                    ,repository ,branch ,file)))
+                                             ,repository ,branch ,file)))
    'commits))
 
 (defmethod show-commit ((username string) (repository string) (sha string)
                         &key login token)
   (slot-value (to-json (request login token `("commits" "show" ,username
-                                                               ,repository ,sha)))
+                                                        ,repository ,sha)))
               'commit))
 
 ;;; Object API
@@ -611,9 +610,9 @@ These are basically read only ssh keys."))
                               &key network-meta login token start end)
   (let ((network-meta (or network-meta
                           (nethash (show-network-meta username
-                                                           repository
-                                                           :token token
-                                                           :login login)))))
+                                                      repository
+                                                      :token token
+                                                      :login login)))))
     (to-json (github-request :login login :token token :auth :default
                              :parameters `(,username ,repository
                                                      "network_data_chunk")
@@ -685,8 +684,8 @@ original TITLE and BODY."))
               'issue))
 
 (defmethod close-issue ((username string) (repository string)
-                       (issue string)
-                       &key login token)
+                        (issue string)
+                        &key login token)
   (slot-value (to-json (authed-request login token
                                        `("issues" "close"
                                                   ,username
@@ -695,8 +694,8 @@ original TITLE and BODY."))
               'issue))
 
 (defmethod reopen-issue ((username string) (repository string)
-                       (issue string)
-                       &key login token)
+                         (issue string)
+                         &key login token)
   (slot-value (to-json (authed-request login token
                                        `("issues" "reopen"
                                                   ,username
@@ -718,24 +717,24 @@ original TITLE and BODY."))
 
 (defmethod show-labels ((username string) (repository string)
                         &key login token)
-  (cdar (json->alist (request login token
+  (json->list (request login token
                               `("issues" "labels" ,username ,repository)))))
 
 (defmethod add-label ((username string) (repository string)
                       (label string) (issue string)
                       &key login token)
-  (cdar (json->alist (authed-request login token
-                                     `("issues" "label" "add"
-                                                ,username ,repository
-                                                ,label ,issue)))))
+  (json->list (authed-request login token
+                              `("issues" "label" "add"
+                                         ,username ,repository
+                                         ,label ,issue)))))
 
 (defmethod remove-label ((username string) (repository string)
-                      (label string) (issue string)
-                      &key login token)
-  (cdar (json->alist (authed-request login token
-                                     `("issues" "label" "remove"
-                                                ,username ,repository
-                                                ,label ,issue)))))
+                         (label string) (issue string)
+                         &key login token)
+  (json->list (authed-request login token
+                              `("issues" "label" "remove"
+                                         ,username ,repository
+                                         ,label ,issue)))))
 
 (defmethod add-comment ((username string) (repository string)
                         (comment string) (issue string)
