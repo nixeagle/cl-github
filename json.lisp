@@ -10,9 +10,9 @@ ALIST. Hash table is initialized using the HASH-TABLE-INITARGS."
     table))
 
 (defparameter +github-class-map+
-  (alist-hash-table '(("USER" . "USER") ("PLAN" . "PLAN") ("AUTHOR" . "AUTHOR")
+  (alist-hash-table '(("USER" . "USER") ("PLAN" . "PLAN") ("AUTHOR" . "SIMPLE-USER")
                       ("PARENTS" . "PARENTS") ("COMMIT" . "COMMIT")
-                      ("MODIFIED" . "MODIFIED") ("COMMITTER" . "COMMITTER")
+                      ("MODIFIED" . "MODIFIED") ("COMMITTER" . "SIMPLE-USER")
                       ("DELETE-TOKEN" . "DELETE-TOKEN") ("TREE" . "TREE")
                       ("BLOB" . "BLOB") ("BLOCKS" . "BLOCKS")
                       ("HEADS" . "HEADS") ("COMMITS" . "COMMITS")
