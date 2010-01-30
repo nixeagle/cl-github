@@ -238,6 +238,10 @@ the network api."))
    focus dates users)
   (:documentation "Toplevel result from github's Network API."))
 
+(defclass issue ()
+  (number votes created-at body title updated-at closed-at user labels state)
+  (:documentation "Github issue information."))
+
 ;;; utils
 (defun build-github-api-url (&rest parameters)
   "Build a request url using PARAMETERS."
