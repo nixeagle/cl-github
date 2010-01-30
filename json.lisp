@@ -19,8 +19,9 @@
                            (collect #\- :result-type string)
                            (collect char :result-type string)))))
 
-(defun key-add-or-set (key)
-  "Mark KEY a prototype if it is, and add it to the accumulator."
+(defgeneric key-add-or-set (key)
+  (:documentation "Mark KEY a prototype if it is, and add it to the accumulator."))
+(defmethod key-add-or-set (key)
   (let ((key (funcall #'camel-case-to-lisp key)))
     (if (and (not *current-prototype*)
              (member key +github-api-class-strings+ :test #'equal))
@@ -48,9 +49,7 @@ Otherwise, do the same as ACCUMULATOR-ADD-VALUE."))
         json::*accumulator*)
       (json::accumulator-add-value value)))
 
-;;; Might be needed if the prototype never gets reset. Can't reproduce
-;;; atm though
-#+ () (defmethod value-add-or-set :after (value)
+(defmethod value-add-or-set :after (value)
   (setq *current-prototype* nil))
 
 ;;; Modified from cl-json 
