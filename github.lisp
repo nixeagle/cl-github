@@ -518,10 +518,10 @@ These are basically read only ssh keys."))
 (defmethod remove-deploy-key ((repository string) (id integer) &key login token)
   (remove-deploy-key repository (princ-to-string id) :login login :token token))
 
-(defmethod collaborators ((username string) (repository string) &key login token)
-  (json->class (request login token `("repos" "show" ,username
-                                              ,repository "collaborators"))
-               'collaborators))
+(defmethod show-collaborators ((username string) (repository string)
+                               &key login token)
+  (cdar (json->alist (request login token `("repos" "show" ,username
+                                                    ,repository "collaborators")))))
 
 (defmethod add-collaborator ((username string) (repository string) &key login token)
   (json->class
