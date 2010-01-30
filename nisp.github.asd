@@ -13,7 +13,7 @@
                 :drakma
                 :flexi-streams
                 :cl-json
-                :closure-html
+                #+ sbcl :sb-introspect
                 :nisp.util)
   :serial t
   :components
