@@ -645,7 +645,7 @@ These are basically read only ssh keys."))
   (:documentation "Close ISSUE on USERNAME's REPOSITORY."))
 (defgeneric reopen-issue (username repository issue &key login token)
   (:documentation "Reopen ISSUE on USERNAME's REPOSITORY."))
-(defgeneric edit-issue (username repository issue title body &key login token)
+(defgeneric edit-issue (username repository title body issue &key login token)
   (:documentation "Edit ISSUE setting TITLE and BODY on USERNAME's REPOSITORY.
 
 Editing an issue causes your TITLE and BODY to completely replace the
@@ -656,7 +656,7 @@ original TITLE and BODY."))
   (:documentation "Add LABEL to ISSUE on USERNAME's REPOSITORY."))
 (defgeneric remove-label (username repository label issue &key login token)
   (:documentation "Remove LABEL from ISSUE on USERNAME's REPOSITORY."))
-(defgeneric add-comment (username repository issue comment &key login token)
+(defgeneric add-comment (username repository comment issue &key login token)
   (:documentation "Add COMMENT to ISSUE on USERNAME's REPOSITORY."))
 
 (deftype valid-issue-state ()
