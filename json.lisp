@@ -35,7 +35,8 @@
                  (string= key "NETWORK")
                  (string= key "USERS")
                  (string= key "ISSUES")
-                 (string= key "ISSUE")))
+                 (string= key "ISSUE")
+                 (string= key "COMMENT")))
         (progn (setq json::*accumulator-last*
                      (setf (cdr json::*accumulator-last*) (cons (cons key nil) nil)))
                (setq *current-prototype* key)
