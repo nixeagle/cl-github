@@ -160,12 +160,6 @@ slots."))
   ;; Yes this is a little strange... but this is how github does it, it
   ;; can be cleaned up later.
   (:documentation "The id for the parent commit."))
-(defclass contact-data ()
-  (email login name)
-  (:documentation "Person information."))
-
-(defclass committer (contact-data) ())
-(defclass author (contact-data) ())
 
 (defclass network-data-commit ()
   (message time parents date author id space gravatar login)
