@@ -524,16 +524,14 @@ These are basically read only ssh keys."))
                                                     ,repository "collaborators")))))
 
 (defmethod add-collaborator ((username string) (repository string) &key login token)
-  (json->class
-   (authed-request login token `("repos" "collaborators" ,repository
-                                         "add" ,username))
-   'collaborators))
+  (cdar (json->alist
+         (authed-request login token `("repos" "collaborators" ,repository
+                                               "add" ,username)))))
 
 (defmethod remove-collaborator ((username string) (repository string) &key login token)
-  (json->class
-   (authed-request login token `("repos" "collaborators" ,repository
-                                                "remove" ,username))
-   'collaborators))
+  (cdar (json->alist
+         (authed-request login token `("repos" "collaborators" ,repository
+                                               "remove" ,username)))))
 
 (defmethod show-network ((username string) (repository string) &key login token)
   (slot-value
