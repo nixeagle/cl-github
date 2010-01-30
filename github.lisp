@@ -750,4 +750,13 @@ original TITLE and BODY."))
                                       ,label ,issue))
                'issue-labels))
 
+(defmethod add-comment ((username string) (repository string)
+                        (comment string) (issue string)
+                        &key login token)
+  (slot-value (to-json (authed-request login token
+                                       `("issues" "comment" ,username
+                                                  ,repository ,issue)
+                                       :comment comment))
+              'comment))
+
 ;;; End file
