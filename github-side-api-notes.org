@@ -1,0 +1,18 @@
+#+TITLE: Github api oddities
+
+This is just a list of strangeness that the github api has. These may or
+may not be actual bugs.
+
+* Unfollow does not actually unfollow
+  You can follow a user with the api, but you can't unfollow them.
+
+* Disabling bug tracker does not disable issues api.
+  If you untick the bug tracker checkbox, the issues api still works and
+  allows you to add issues as if the tracker was still visible on the
+  github site.
+
+
+* Cannot view labels on a project I am a collaborator on
+  You can view them on your project, you can see labels on their project
+  you are a collaborator on in the web interface, but you can't view
+  those same labels in the api interface.

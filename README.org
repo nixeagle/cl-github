@@ -1,0 +1,16 @@
+#+TITLE: github api
+
+Important! This library is not API stable! In general functions and
+objects exported from [[file:package.lisp]] will not have their interfaces
+changed without a major version increment. Anything else is subject to
+my whim and fancy. Of course the idea is all functions end up exported
+;).
+
+With that aside, the major principle we follow is functions either
+return a *single* object or they return a list of objects. In some
+extremely simple cases, we return lists of strings or lists of other non
+CLOS objects.
+
+As of this writing [2010-01-30 Sat], all current v2 github APIs are
+implemented if not release ready or vetted for an interface I'm
+comfortable with maintaining.
