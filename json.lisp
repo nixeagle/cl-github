@@ -95,8 +95,6 @@ Otherwise, create a FLUID-OBJECT with slots interned in
               (class (if (stringp *previous-prototype*) (as-symbol *previous-prototype*))))
           (when (and *previous-prototype* (not class))
             (push (cons json::*prototype-name* *previous-prototype*) bindings))
-          (print class)
-          (print bindings)
           (if (and (not class) (listp bindings) (not (consp (cdr bindings))))
               (cdar bindings)
               (json:make-object bindings class))))))
