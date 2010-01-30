@@ -204,7 +204,7 @@ slots."))
   (:documentation "Blocks of something that github gives when querying
 the network api."))
 
-(defclass heads ()
+(defclass head ()
   (name id)
   (:documentation "Heads of branches returned from github's Network API."))
 

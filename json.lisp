@@ -15,7 +15,7 @@ ALIST. Hash table is initialized using the HASH-TABLE-INITARGS."
                       ("MODIFIED" . "FILE-DIFF") ("COMMITTER" . "SIMPLE-USER")
                       ("DELETE-TOKEN" . "DELETE-TOKEN") ("TREE" . "TREE")
                       ("BLOB" . "BLOB") ("BLOCKS" . "BLOCK")
-                      ("HEADS" . "HEADS") ("COMMITS" . "COMMITS")
+                      ("HEADS" . "HEAD") ("COMMITS" . "COMMITS")
                       ("REPOSITORY" . "REPOSITORY")
                       ("PUBLIC-KEYS" . "PUBLIC-KEYS")
                       ("REPOSITORIES" . "REPOSITORIES")
