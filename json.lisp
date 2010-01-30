@@ -20,7 +20,7 @@ ALIST. Hash table is initialized using the HASH-TABLE-INITARGS."
                       ("PUBLIC-KEYS" . "PUBLIC-KEYS")
                       ("REPOSITORIES" . "REPOSITORIES")
                       ("NETWORK" . "NETWORK") ("USERS" . "USERS")
-                      ("ISSUES" . "ISSUES") ("ISSUE" . "ISSUE")
+                      ("ISSUES" . "ISSUE") ("ISSUE" . "ISSUE")
                       ("COMMENT" . "COMMENT"))
                     :test #'equal)
   "mapping of class strings to real classes.")
