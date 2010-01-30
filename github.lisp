@@ -156,14 +156,6 @@ slots."))
   ((languages :reader languages))
   (:documentation "List of languages."))
 
-(defclass tags ()
-  ((tags :reader tags))
-  (:documentation "List of tags on a repository."))
-
-(defclass branches ()
-  ((branches :reader branches))
-  (:documentation "List of branches on a repository."))
-
 (defclass parents ()
   (id)
   ;; Yes this is a little strange... but this is how github does it, it
