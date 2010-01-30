@@ -489,9 +489,8 @@ These are basically read only ssh keys."))
                                                  ,repository "network"))))
 
 (defmethod show-languages ((username string) (repository string) &key login token)
-  (json->class (request login token `("repos" "show" ,username
-                                              ,repository "languages"))
-               'languages))
+  (json->list (request login token `("repos" "show"
+                                             ,username ,repository "languages"))))
 
 (defmethod show-tags ((username string) (repository string) &key login token)
   (json->list (request login token `("repos" "show" ,username
