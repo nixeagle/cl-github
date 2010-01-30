@@ -186,10 +186,6 @@ slots."))
   (diff filename)
   (:documentation "Modification information for a commit."))
 
-(defclass emails ()
-  ((emails :reader emails))
-  (:documentation "List of user emails."))
-
 (defclass public-keys ()
   (title id key)
   (:documentation "Information on a public key."))
@@ -282,8 +278,6 @@ ID can be either a string or a positive number."))
   (:documentation "List REPOSITORY's deploy keys.
 
 These are basically read only ssh keys."))
-(defgeneric emails (object)
-  (:documentation "NIL"))
 (defgeneric show-following (username)
   (:documentation "List all users that USERNAME follows."))
 (defgeneric show-commits (username repository branch &key file login token)
