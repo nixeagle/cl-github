@@ -246,6 +246,10 @@ the network api."))
   ()
   (:documentation "Github issue information."))
 
+(defclass comment ()
+  (comment status)
+  (:documentation "Comment on a github issue."))
+
 ;;; utils
 (defun build-github-api-url (&rest parameters)
   "Build a request url using PARAMETERS."
