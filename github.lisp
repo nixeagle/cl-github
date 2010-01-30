@@ -741,4 +741,13 @@ original TITLE and BODY."))
                                       ,label ,issue))
                'issue-labels))
 
+(defmethod remove-label ((username string) (repository string)
+                      (label string) (issue string)
+                      &key login token)
+  (json->class (authed-request login token
+                           `("issues" "label" "remove"
+                                      ,username ,repository
+                                      ,label ,issue))
+               'issue-labels))
+
 ;;; End file
