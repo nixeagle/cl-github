@@ -242,6 +242,10 @@ the network api."))
   (number votes created-at body title updated-at closed-at user labels state)
   (:documentation "Github issue information."))
 
+(defclass issues (issue)
+  ()
+  (:documentation "Github issue information."))
+
 ;;; utils
 (defun build-github-api-url (&rest parameters)
   "Build a request url using PARAMETERS."
