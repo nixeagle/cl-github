@@ -1,5 +1,12 @@
 (in-package :nisp.github)
 
+(defparameter +github-api-class-strings+
+  '("USER" "PLAN" "AUTHOR" "PARENTS" "COMMIT"
+    "MODIFIED" "COMMITTER" "DELETE-TOKEN"
+    "TREE" "BLOB" "BLOCKS" "HEADS" "COMMITS"
+    "REPOSITORY" "PUBLIC-KEYS" "REPOSITORIES"
+    "NETWORK" "USERS" "ISSUES" "ISSUE" "COMMENT"))
+
 (defun beginning-of-object ()
   "Do more at prototype init"
   (setq *previous-prototype* *current-prototype*) (setq *current-prototype* nil)
@@ -16,27 +23,7 @@
   "Mark KEY a prototype if it is, and add it to the accumulator."
   (let ((key (funcall #'camel-case-to-lisp key)))
     (if (and (not *current-prototype*)
-             (or (string= key "USER")
-                 (string= key "PLAN")
-                 (string= key "AUTHOR")
-                 (string= key "PARENTS")
-                 (string= key "COMMIT")
-                 (string= key "MODIFIED")
-                 (string= key "COMMITTER")
-                 (string= key "DELETE-TOKEN")
-                 (string= key "TREE")
-                 (string= key "BLOB")
-                 (string= key "BLOCKS")
-                 (string= key "HEADS")
-                 (string= key "COMMITS")
-                 (string= key "REPOSITORY")
-                 (string= key "PUBLIC-KEYS")
-                 (string= key "REPOSITORIES")
-                 (string= key "NETWORK")
-                 (string= key "USERS")
-                 (string= key "ISSUES")
-                 (string= key "ISSUE")
-                 (string= key "COMMENT")))
+             (member key +github-api-class-strings+ :test #'equal))
         (progn (setq json::*accumulator-last*
                      (setf (cdr json::*accumulator-last*) (cons (cons key nil) nil)))
                (setq *current-prototype* key)
@@ -79,7 +66,7 @@ Otherwise, create a FLUID-OBJECT with slots interned in
            (loop for (key . value) in bindings
               collect (cons (json:json-intern key) value))))
     (if (typep *previous-prototype* 'json::prototype)
-        (with-slots (lisp-class lisp-superclasses lisp-package)
+         (with-slots (lisp-class lisp-superclasses lisp-package)
             *previous-prototype*
           (let* ((package-name (as-symbol lisp-package))
                  (json:*json-symbols-package*
