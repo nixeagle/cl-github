@@ -33,11 +33,12 @@
               (setf (cdr json::*accumulator-last*) (cons (cons key nil) nil))))
     json::*accumulator*))
 
-
-(defun value-add-or-set (value)
-  "If VALUE (in a JSON Object being decoded) corresponds to a key which
-matches *PROTOTYPE-NAME*, set VALUE to be the prototype of the Object.
-Otherwise, do the same as ACCUMULATOR-ADD-VALUE."
+(defgeneric value-add-or-set (value)
+  (:documentation "If VALUE (in a JSON Object being decoded)
+corresponds to a key which matches *PROTOTYPE-NAME*,
+set VALUE to be the prototype of the Object.
+Otherwise, do the same as ACCUMULATOR-ADD-VALUE."))
+(defmethod value-add-or-set (value)
   (prog1
       (if (eql json::*prototype* t)
           (progn
