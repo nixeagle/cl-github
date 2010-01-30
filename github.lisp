@@ -121,13 +121,6 @@ When parsing the plan json object, this will be set to \"USER\".")
         repos id type pushed score created)
   (:documentation "Describes a github user search result."))
 
-(defclass followers ()
-  (users)
-  (:documentation "List of users following someone."))
-(defclass following ()
-  (users)
-  (:documentation "List of users someone follows."))
-
 (defclass repository ()
   (description forks url homepage watchers fork open-issues private name owner))
 
@@ -395,17 +388,17 @@ These are basically read only ssh keys."))
                                        :values\[location\] location)) 'user))
 
 (defmethod show-followers ((username string))
-  (json->list (github-simple-request "user" "show" username "followers"))))
+  (json->list (github-simple-request "user" "show" username "followers")))
 
 (defmethod show-following ((username string))
-  (json->list (github-simple-request "user" "show" username "following"))))
+  (json->list (github-simple-request "user" "show" username "following")))
 
 (defmethod follow ((username string) &key login token)
-  (json->list (authed-request login token `("user" "follow" ,username)))))
+  (json->list (authed-request login token `("user" "follow" ,username))))
                
 (defmethod unfollow ((username string) &key login token)
   ;; Github seems to ignore this request.
-  (json->list (authed-request login token `("user" "unfollow" ,username)))))
+  (json->list (authed-request login token `("user" "unfollow" ,username))))
 
 (defmethod watched-repositories ((username string))
   (slot-value
@@ -413,15 +406,15 @@ These are basically read only ssh keys."))
    'repositories))
 
 (defmethod user-emails (&key login token)
-  (json->list (authed-request login token '("user" "emails")))))
+  (json->list (authed-request login token '("user" "emails"))))
 
 (defmethod add-user-email ((email string) &key login token)
   (json->list (authed-request login token '("user" "email" "add")
-                              :email email))))
+                              :email email)))
 
 (defmethod remove-user-email ((email string) &key login token)
   (json->list (authed-request login token '("user" "email" "remove")
-                              :email email))))
+                              :email email)))
 
 (defmethod user-keys (&key login token)
   (slot-value (to-json (authed-request login token '("user" "keys")))
@@ -482,6 +475,7 @@ These are basically read only ssh keys."))
               'repository))
 
 (defmethod delete-repository ((repository string) &key delete-token login token)
+  (error "broken.")
   (json->element
    (authed-request login token
                    `("repos" "delete" ,repository)
@@ -520,7 +514,7 @@ These are basically read only ssh keys."))
 (defmethod show-collaborators ((username string) (repository string)
                                &key login token)
   (json->list (request login token `("repos" "show" ,username
-                                                    ,repository "collaborators")))))
+                                                    ,repository "collaborators"))))
 
 (defmethod add-collaborator ((username string) (repository string) &key login token)
   (cdar (json->alist
@@ -545,7 +539,7 @@ These are basically read only ssh keys."))
 
 (defmethod show-tags ((username string) (repository string) &key login token)
   (json->list (request login token `("repos" "show" ,username
-                                                    ,repository "tags")))))
+                                                    ,repository "tags"))))
 
 (defmethod show-branches ((username string) (repository string) &key login token)
   (cdar (json->alist
@@ -718,7 +712,7 @@ original TITLE and BODY."))
 (defmethod show-labels ((username string) (repository string)
                         &key login token)
   (json->list (request login token
-                              `("issues" "labels" ,username ,repository)))))
+                              `("issues" "labels" ,username ,repository))))
 
 (defmethod add-label ((username string) (repository string)
                       (label string) (issue string)
@@ -726,7 +720,7 @@ original TITLE and BODY."))
   (json->list (authed-request login token
                               `("issues" "label" "add"
                                          ,username ,repository
-                                         ,label ,issue)))))
+                                         ,label ,issue))))
 
 (defmethod remove-label ((username string) (repository string)
                          (label string) (issue string)
@@ -734,7 +728,7 @@ original TITLE and BODY."))
   (json->list (authed-request login token
                               `("issues" "label" "remove"
                                          ,username ,repository
-                                         ,label ,issue)))))
+                                         ,label ,issue))))
 
 (defmethod add-comment ((username string) (repository string)
                         (comment string) (issue string)
