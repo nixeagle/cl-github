@@ -474,12 +474,13 @@ These are basically read only ssh keys."))
                                        :public public))
               'repository))
 
-(defmethod delete-repository ((repository string) &key delete-token login token)
-  (error "broken.")
-  (json->element
-   (authed-request login token
-                   `("repos" "delete" ,repository)
-                   :delete-token (delete-repository repository))))
+(defmethod delete-repository ((repository string) &key login token)
+  (flet ((del-repo (&optional delete-token)
+           (json->element
+            (authed-request login token
+                            `("repos" "delete" ,repository)
+                            :delete-token delete-token))))
+    (del-repo (del-repo))))
 
 (defmethod set-repository-private ((repository string) &key login token)
   (slot-value (to-json (authed-request login token
