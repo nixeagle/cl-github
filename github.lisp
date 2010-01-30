@@ -651,4 +651,8 @@ original TITLE and BODY."))
 (defgeneric add-comment (username repository issue comment &key login token)
   (:documentation "Add COMMENT to ISSUE on USERNAME's REPOSITORY."))
 
+(deftype valid-issue-state ()
+  "Github issues have two valid states."
+  '(member :open :closed))
+
 ;;; End file
