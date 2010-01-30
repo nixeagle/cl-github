@@ -655,4 +655,12 @@ original TITLE and BODY."))
   "Github issues have two valid states."
   '(member :open :closed))
 
+(defmethod search-issues ((username string) (repository string)
+                          (state string) (term string)
+                          &key login token)
+  (slot-value (to-json (request login token
+                                `("issues" "search" ,username
+                                           ,repository ,state ,term)))
+              'issues))
+
 ;;; End file
