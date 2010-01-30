@@ -39,17 +39,19 @@ corresponds to a key which matches *PROTOTYPE-NAME*,
 set VALUE to be the prototype of the Object.
 Otherwise, do the same as ACCUMULATOR-ADD-VALUE."))
 (defmethod value-add-or-set (value)
-  (prog1
-      (if (eql json::*prototype* t)
-          (progn
-            (check-type value (or json::prototype string)
-                        (format nil "Invalid prototype: ~S." value))
-            (setq json::*prototype* *current-prototype*)
-        
-            (print "here")
-            json::*accumulator*)
-          (json::accumulator-add-value value))
-    (setq *current-prototype* nil)))
+  (if (eql json::*prototype* t)
+      (progn
+        (check-type value (or json::prototype string)
+                    (format nil "Invalid prototype: ~S." value))
+        (setq json::*prototype* *current-prototype*)
+        (print "here")
+        json::*accumulator*)
+      (json::accumulator-add-value value)))
+
+;;; Might be needed if the prototype never gets reset. Can't reproduce
+;;; atm though
+#+ () (defmethod value-add-or-set :after (value)
+  (setq *current-prototype* nil))
 
 ;;; Modified from cl-json 
 (defun accumulator-get-object ()
