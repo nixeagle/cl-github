@@ -259,6 +259,10 @@ the network api."))
                 prior))
           parameters))
 
+(defclass issue-labels ()
+  (labels)
+  (:documentation "Github issue tracker labels."))
+
 (defmethod make-object :before (bindings
                                 (class (eql nil))
                                 &optional superclasses)
