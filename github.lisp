@@ -714,4 +714,16 @@ original TITLE and BODY."))
                                                   ,issue)))
               'issue))
 
+(defmethod edit-issue ((username string) (repository string)
+                       (title string) (body string) (issue string)
+                       &key login token)
+  (slot-value (to-json (authed-request login token
+                                       `("issues" "edit"
+                                                  ,username
+                                                  ,repository
+                                                  ,issue)
+                                       :title title
+                                       :body body))
+              'issue))
+
 ;;; End file
