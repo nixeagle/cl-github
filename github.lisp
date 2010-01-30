@@ -694,4 +694,13 @@ original TITLE and BODY."))
                                        :body body))
               'issue))
 
+(defmethod close-issue ((username string) (repository string)
+                       (issue string)
+                       &key login token)
+  (slot-value (to-json (authed-request login token
+                                       `("issues" "close"
+                                                  ,username
+                                                  ,repository
+                                                  ,issue)))
+              'issue))
 ;;; End file
