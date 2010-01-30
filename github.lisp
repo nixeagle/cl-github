@@ -393,12 +393,10 @@ These are basically read only ssh keys."))
                                        :values\[location\] location)) 'user))
 
 (defmethod show-followers ((username string))
-  (json->class (github-simple-request "user" "show" username "followers")
-               'followers))
+  (cdar (json->alist (github-simple-request "user" "show" username "followers"))))
 
 (defmethod show-following ((username string))
-  (json->class (github-simple-request "user" "show" username "following")
-               'following))
+  (cdar (json->alist (github-simple-request "user" "show" username "following"))))
 
 (defmethod follow ((username string) &key login token)
   (json->class (authed-request login token `("user" "follow" ,username))
