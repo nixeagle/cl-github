@@ -374,6 +374,8 @@ These are basically read only ssh keys."))
 
 (defmethod show-user ((user string)
                       &key login token name blog email company location)
+  ;; Not going to export this right now, I want to make this more lisp
+  ;; like by using setf.
   (slot-value (to-json (github-request :parameters `("user" "show" ,user)
                                        :auth (when (string= user *default-login*)
                                                :force)
