@@ -682,4 +682,16 @@ original TITLE and BODY."))
   (slot-value (to-json (request login token `("issues" "show" ,username
                                                        ,repository ,issue)))
               'issue))
+
+(defmethod open-issue ((username string) (repository string)
+                       (title string) (body string)
+                       &key login token)
+  (slot-value (to-json (authed-request login token
+                                       `("issues" "open"
+                                                  ,username
+                                                  ,repository)
+                                       :title title
+                                       :body body))
+              'issue))
+
 ;;; End file
