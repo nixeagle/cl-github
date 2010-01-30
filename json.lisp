@@ -52,6 +52,15 @@ Otherwise, do the same as ACCUMULATOR-ADD-VALUE."))
 (defmethod value-add-or-set :after (value)
   (setq *current-prototype* nil))
 
+(defgeneric as-symbol (object)
+  (:method ((object string))
+    "Change OBJECT to a symbol by interning it."
+    (intern object))
+  (:method ((object symbol))
+    "Return OBJECT as is."
+    object)
+  (:documentation "Get the symbolic representation of object."))
+
 ;;; Modified from cl-json 
 (defun accumulator-get-object ()
   "Return a CLOS object, using keys and values accumulated so far in
@@ -60,11 +69,7 @@ JSON Object had a prototype field infer the class of the object and
 the package wherein to intern slot names from the prototype.
 Otherwise, create a FLUID-OBJECT with slots interned in
 *JSON-SYMBOLS-PACKAGE*."
-  (flet ((as-symbol (value)
-           (etypecase value
-             (string (intern value))
-             (symbol value)))
-         (intern-keys (bindings)
+  (flet ((intern-keys (bindings)
            (loop for (key . value) in bindings
               collect (cons (json:json-intern key) value))))
     (if (typep *previous-prototype* 'json::prototype)
