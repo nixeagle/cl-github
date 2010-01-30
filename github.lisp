@@ -545,13 +545,12 @@ These are basically read only ssh keys."))
                'languages))
 
 (defmethod show-tags ((username string) (repository string) &key login token)
-  (json->class (request login token `("repos" "show" ,username ,repository "tags"))
-               'tags))
+  (cdar (json->alist (request login token `("repos" "show" ,username
+                                                    ,repository "tags")))))
 
 (defmethod show-branches ((username string) (repository string) &key login token)
-  (json->class
-   (request login token `("repos" "show" ,username ,repository "branches"))
-               'branches))
+  (cdar (json->alist
+         (request login token `("repos" "show" ,username ,repository "branches")))))
 
 (defmethod show-commits ((username string) (repository string) (branch string)
                          &key file login token)
