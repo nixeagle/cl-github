@@ -718,27 +718,24 @@ original TITLE and BODY."))
 
 (defmethod show-labels ((username string) (repository string)
                         &key login token)
-  (json->class (request login token
-                    `("issues" "labels" ,username ,repository))
-               'issue-labels))
+  (cdar (json->alist (request login token
+                              `("issues" "labels" ,username ,repository)))))
 
 (defmethod add-label ((username string) (repository string)
                       (label string) (issue string)
                       &key login token)
-  (json->class (authed-request login token
-                           `("issues" "label" "add"
-                                      ,username ,repository
-                                      ,label ,issue))
-               'issue-labels))
+  (cdar (json->alist (authed-request login token
+                                     `("issues" "label" "add"
+                                                ,username ,repository
+                                                ,label ,issue)))))
 
 (defmethod remove-label ((username string) (repository string)
                       (label string) (issue string)
                       &key login token)
-  (json->class (authed-request login token
-                           `("issues" "label" "remove"
-                                      ,username ,repository
-                                      ,label ,issue))
-               'issue-labels))
+  (cdar (json->alist (authed-request login token
+                                     `("issues" "label" "remove"
+                                                ,username ,repository
+                                                ,label ,issue)))))
 
 (defmethod add-comment ((username string) (repository string)
                         (comment string) (issue string)
