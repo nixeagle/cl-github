@@ -726,4 +726,10 @@ original TITLE and BODY."))
                                        :body body))
               'issue))
 
+(defmethod show-labels ((username string) (repository string)
+                        &key login token)
+  (json->class (request login token
+                    `("issues" "labels" ,username ,repository))
+               'issue-labels))
+
 ;;; End file
