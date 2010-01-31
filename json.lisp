@@ -13,7 +13,7 @@ ALIST. Hash table is initialized using the HASH-TABLE-INITARGS."
   (alist-hash-table '(("USER" . "USER") ("PLAN" . "PLAN") ("AUTHOR" . "SIMPLE-USER")
                       ("PARENTS" . "PARENT") ("COMMIT" . "COMMIT")
                       ("MODIFIED" . "FILE-DIFF") ("COMMITTER" . "SIMPLE-USER")
-                      ("DELETE-TOKEN" . "DELETE-TOKEN") ("TREE" . "TREE")
+                      ("DELETE-TOKEN" . "DELETE-TOKEN") ("TREE" . "TREEISH")
                       ("BLOB" . "BLOB") ("BLOCKS" . "COMMIT-RANGE")
                       ("HEADS" . "HEAD") ("COMMITS" . "COMMITS")
                       ("REPOSITORY" . "REPOSITORY")
@@ -130,6 +130,28 @@ Otherwise, create a FLUID-OBJECT with slots interned in
                                             *previous-prototype*))
      ,@body))
 
+(defgeneric accumulator-add-preserved-keyword-key (key))
+(defmethod accumulator-add-preserved-keyword-key (key)
+  (let ((*package* (find-package :keyword))
+        (*read-eval* nil)
+        (*readtable*  (copy-readtable nil)))
+    (setf (readtable-case *readtable*) :preserve)
+    (setq json::*accumulator-last*
+          (setf (cdr json::*accumulator-last*)
+                (cons (cons (read-from-string key nil nil :preserve-whitespace t)
+                            nil) nil)))))
+
+(defgeneric accumulator-add-preserved-key (key))
+(defmethod accumulator-add-preserved-key (key)
+  (setq json::*accumulator-last*
+        (setf (cdr json::*accumulator-last*) (cons (cons key nil) nil))))
+
+(defmacro with-simple-alist-decoder (&body body)
+  "Execute body with decoder bindings set to return preserved alists."
+  `(json:bind-custom-vars
+       (:object-key #'accumulator-add-preserved-key)
+     ,@body))
+
 (defgeneric to-json (object)
   (:method :around (obj)
            (let ((json:*json-symbols-package* :nisp.github))
@@ -158,7 +180,7 @@ Otherwise, create a FLUID-OBJECT with slots interned in
                 (list object))))
 (defgeneric json->list (object))
 (defmethod json->list ((object stream))
-  (ensure-list (cdar (with-decoder-simple-list-semantics
+  (ensure-list (cdar (with-simple-alist-decoder
                        (decode-json object)))))
 (defmethod json->list :after ((object stream))
   (close object))
