@@ -375,9 +375,6 @@ These are basically read only ssh keys."))
   ;; Github seems to ignore this request.
   (json->list (authed-request login token `("user" "unfollow" ,username))))
 
-(defmethod watched-repositories ((username string))
-  (to-json (github-simple-request "repos" "watched" username)))
-
 (defmethod user-emails (&key login token)
   (json->list (authed-request login token '("user" "emails"))))
 
@@ -400,8 +397,22 @@ These are basically read only ssh keys."))
   (to-json (authed-request login token '("user" "key" "remove")
                            :id (princ-to-string id))))
 
-(defmethod search-users ((username string))
-  (to-json (github-simple-request "user" "search" username)))
+(defmethod deploy-keys ((repository string) &key login token)
+  (to-json (authed-request login token `("repos" "keys" ,repository))))
+
+(defmethod add-deploy-key ((repository string) (title string)
+                           (key string) &key login token)
+  (to-json (authed-request login token `("repos" "key" ,repository "add")
+                           :title title :key key)))
+
+(defmethod remove-deploy-key ((repository string) (id string) &key login token)
+  (to-json (authed-request login token `("repos" "key" ,repository "remove")
+                           :id id)))
+(defmethod remove-deploy-key ((repository string) (id integer) &key login token)
+  (remove-deploy-key repository (princ-to-string id) :login login :token token))
+
+(defmethod watched-repositories ((username string))
+  (to-json (github-simple-request "repos" "watched" username)))
 
 ;;; Repositories
 (defmethod search-repositories ((search-string string))
@@ -444,20 +455,8 @@ These are basically read only ssh keys."))
 (defmethod set-repository-public ((repository string) &key login token)
   (to-json (authed-request login token `("repos" "set" "public" ,repository))))
 
-(defmethod deploy-keys ((repository string) &key login token)
-  (to-json (authed-request login token `("repos" "keys" ,repository))))
-
-(defmethod add-deploy-key ((repository string) (title string)
-                           (key string) &key login token)
-  (to-json (authed-request login token `("repos" "key" ,repository "add")
-                           :title title :key key)))
-
-(defmethod remove-deploy-key ((repository string) (id string) &key login token)
-  (to-json (authed-request login token `("repos" "key" ,repository "remove")
-                           :id id)))
-
-(defmethod remove-deploy-key ((repository string) (id integer) &key login token)
-  (remove-deploy-key repository (princ-to-string id) :login login :token token))
+(defmethod search-users ((username string))
+  (to-json (github-simple-request "user" "search" username)))
 
 (defmethod show-collaborators ((username string) (repository string)
                                &key login token)
