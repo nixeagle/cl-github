@@ -179,7 +179,7 @@ slots."))
   (diff filename)
   (:documentation "Modification information for a commit."))
 
-(defclass public-keys ()
+(defclass public-key ()
   (title id key)
   (:documentation "Information on a public key."))
 
@@ -199,7 +199,7 @@ slots."))
   (name sha mode type) 
   (:documentation "Treeish git object that we get from github."))
 
-(defclass block ()
+(defclass commit-range ()
   (name count start)
   (:documentation "Blocks of something that github gives when querying
 the network api."))
