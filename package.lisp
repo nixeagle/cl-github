@@ -29,6 +29,10 @@
    #:deploy-keys
    #:add-deploy-key
    #:remove-deploy-key
+
+
+   ;; Show commit info
+   #:show-commit
    ))
 
 (in-package :nisp.github)
