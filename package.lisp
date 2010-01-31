@@ -20,6 +20,15 @@
    #:add-user-email
    #:remove-uer-email
 
+   ;; User keys
+   #:user-keys
+   #:add-user-key
+   #:remove-user-key
+
+   ;; Repository keys
+   #:deploy-keys
+   #:add-deploy-key
+   #:remove-deploy-key
    ))
 
 (in-package :nisp.github)
