@@ -22,4 +22,7 @@
    (:file "users")
    (:file "json")
    (:file "issues")
-   (:file "github")))
+   (:file "github")
+   (:file "network")))                    ;Needs COMMITS and USERS.
+
+;;; end
