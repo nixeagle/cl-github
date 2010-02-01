@@ -13,18 +13,18 @@
   (:documentation "Close ISSUE on USERNAME's REPOSITORY."))
 (defgeneric reopen-issue (username repository issue &key login token)
   (:documentation "Reopen ISSUE on USERNAME's REPOSITORY."))
-(defgeneric edit-issue (username repository title body issue &key login token)
+(defgeneric edit-issue (username repository issue title body &key login token)
   (:documentation "Edit ISSUE setting TITLE and BODY on USERNAME's REPOSITORY.
 
 Editing an issue causes your TITLE and BODY to completely replace the
 original TITLE and BODY."))
 (defgeneric show-labels (username repository &key login token)
   (:documentation "Show issue labels for USERNAME's REPOSITORY."))
-(defgeneric add-label (username repository label issue &key login token)
+(defgeneric add-label (username repository issue label &key login token)
   (:documentation "Add LABEL to ISSUE on USERNAME's REPOSITORY."))
-(defgeneric remove-label (username repository label issue &key login token)
+(defgeneric remove-label (username repository issue label &key login token)
   (:documentation "Remove LABEL from ISSUE on USERNAME's REPOSITORY."))
-(defgeneric add-comment (username repository comment issue &key login token)
+(defgeneric add-comment (username repository issue comment &key login token)
   (:documentation "Add COMMENT to ISSUE on USERNAME's REPOSITORY."))
 
 (defclass issue-labels ()
@@ -77,7 +77,7 @@ original TITLE and BODY."))
                                                   ,repository ,issue))))
 
 (defmethod edit-issue ((username string) (repository string)
-                       (title string) (body string) (issue string)
+                       (issue string) (title string) (body string) 
                        &key login token)
   (to-json (authed-request login token `("issues" "edit" ,username
                                                   ,repository ,issue)
@@ -89,7 +89,7 @@ original TITLE and BODY."))
                               `("issues" "labels" ,username ,repository))))
 
 (defmethod add-label ((username string) (repository string)
-                      (label string) (issue string)
+                      (issue string) (label string)
                       &key login token)
   (json->list (authed-request login token
                               `("issues" "label" "add"
@@ -97,7 +97,7 @@ original TITLE and BODY."))
                                          ,label ,issue))))
 
 (defmethod remove-label ((username string) (repository string)
-                         (label string) (issue string)
+                         (issue string) (label string) 
                          &key login token)
   (json->list (authed-request login token
                               `("issues" "label" "remove"
@@ -105,7 +105,7 @@ original TITLE and BODY."))
                                          ,label ,issue))))
 
 (defmethod add-comment ((username string) (repository string)
-                        (comment string) (issue string)
+                        (issue string) (comment string) 
                         &key login token)
   (to-json (authed-request login token `("issues" "comment" ,username
                                                   ,repository ,issue)
