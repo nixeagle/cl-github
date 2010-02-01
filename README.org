@@ -15,6 +15,13 @@ comfortable with maintaining.
   - [[http://weitz.de/drakma/][DRAKMA]]  - HTTP support to talk to github.
   - [[http://common-lisp.net/project/iterate/][Iterate]] - A better loop.
 
+*** Some thanks
+    This is not a direct dependency, however I made use of some encoding
+    functions in [[http://weitz.de/hunchentoot][hunchentoot]] and its only right that I mention
+    Dr. Edmund Weitz's work which I selected 3 functions from and placed
+    in [[file:url-utils.lisp]] along with his copyright statement and
+    release under a BSD like license.
+
 * Overview
   The whole public api can be used as of this release, however not all
   of the function names or return results are finalized. Please see

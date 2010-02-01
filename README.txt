@@ -16,6 +16,7 @@ comfortable with maintaining.
 Table of Contents
 =================
 1 Dependencies 
+    1.1 Some thanks 
 2 Overview 
 3 Testing 
 4 Bugs 
@@ -31,6 +32,17 @@ Table of Contents
   [CL-JSON]: http://common-lisp.net/project/cl-json/
   [DRAKMA]: http://weitz.de/drakma/
   [Iterate]: http://common-lisp.net/project/iterate/
+
+1.1 Some thanks 
+================
+    This is not a direct dependency, however I made use of some encoding
+    functions in [hunchentoot] and its only right that I mention
+    Dr. Edmund Weitz's work which I selected 3 functions from and placed
+    in [file:url-utils.lisp] along with his copyright statement and
+    release under a BSD like license.
+
+
+    [hunchentoot]: http://weitz.de/hunchentoot
 
 2 Overview 
 ~~~~~~~~~~~
