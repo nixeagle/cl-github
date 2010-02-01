@@ -17,8 +17,6 @@ This is the same for every call.")
 (defvar *default-token* ""
   "Default token to use when possible.")
 
-(pushnew (cons "application" "json") drakma:*text-content-types*)
-
 (defvar *current-prototype* nil
   "Stores the key of an object until its stored in `*PREVIOUS-PROTOTYPE*'.")
 (defvar *previous-prototype* nil
