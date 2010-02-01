@@ -58,6 +58,11 @@ original TITLE and BODY."))
                        (issue string) &key login token)
   (to-json (request login token `("issues" "show" ,username ,repository ,issue))))
 
+(defmethod show-issue ((username string) (repository string)
+                       (issue integer) &key login token)
+  (show-issue username repository (princ-to-string issue)
+                :login login :token token))
+
 (defmethod open-issue ((username string) (repository string)
                        (title string) (body string)
                        &key login token)
@@ -70,11 +75,23 @@ original TITLE and BODY."))
   (to-json (authed-request login token `("issues" "close" ,username
                                                   ,repository ,issue))))
 
+(defmethod close-issue ((username string) (repository string)
+                        (issue integer)
+                        &key login token)
+  (close-issue username repository (princ-to-string issue)
+                :login login :token token))
+
 (defmethod reopen-issue ((username string) (repository string)
                          (issue string)
                          &key login token)
   (to-json (authed-request login token `("issues" "reopen" ,username
                                                   ,repository ,issue))))
+
+(defmethod reopen-issue ((username string) (repository string)
+                         (issue integer)
+                         &key login token)
+  (reopen-issue username repository (princ-to-string issue)
+                :login login :token token))
 
 (defmethod edit-issue ((username string) (repository string)
                        (issue string) (title string) (body string) 
@@ -82,6 +99,12 @@ original TITLE and BODY."))
   (to-json (authed-request login token `("issues" "edit" ,username
                                                   ,repository ,issue)
                            :title title :body body)))
+
+(defmethod edit-issue ((username string) (repository string)
+                       (issue integer) (title string) (body string) 
+                       &key login token)
+  (edit-issue username repository (princ-to-string issue) title body
+              :login login :token token))
 
 (defmethod show-labels ((username string) (repository string)
                         &key login token)
@@ -96,6 +119,12 @@ original TITLE and BODY."))
                                          ,username ,repository
                                          ,label ,issue))))
 
+(defmethod add-label ((username string) (repository string)
+                      (issue integer) (label string)
+                      &key login token)
+  (add-label username repository (princ-to-string issue) label
+              :login login :token token))
+
 (defmethod remove-label ((username string) (repository string)
                          (issue string) (label string) 
                          &key login token)
@@ -104,9 +133,21 @@ original TITLE and BODY."))
                                          ,username ,repository
                                          ,label ,issue))))
 
+(defmethod remove-label ((username string) (repository string)
+                      (issue integer) (label string)
+                      &key login token)
+  (remove-label username repository (princ-to-string issue) label
+              :login login :token token))
+
 (defmethod add-comment ((username string) (repository string)
                         (issue string) (comment string) 
                         &key login token)
   (to-json (authed-request login token `("issues" "comment" ,username
                                                   ,repository ,issue)
                            :comment comment)))
+
+(defmethod add-comment ((username string) (repository string)
+                      (issue integer) (comment string)
+                      &key login token)
+  (add-comment username repository (princ-to-string issue) comment
+              :login login :token token))

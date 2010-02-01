@@ -33,6 +33,18 @@
 
    ;; Show commit info
    #:show-commit
+
+   ;; Github issues tracker.
+   #:search-issues
+   #:show-issues
+   #:show-issue
+   #:open-issue
+   #:close-issue
+   #:reopen-issue
+   #:add-label
+   #:remove-label
+   #:show-labels
+   #:add-comment
    ))
 
 (in-package :nisp.github)
