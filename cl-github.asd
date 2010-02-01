@@ -6,13 +6,9 @@
 
 
 (defsystem :cl-github
-  :version "0.1.0"
-  :author "James S <i@nixeagle.org>"
-  :maintainer "James S <i@nixeagle.org>"
+  :version "0.1.1"
   :license "BSD"
-  :depends-on (:iterate
-                :drakma
-                :cl-json)
+  :depends-on (:iterate :drakma :cl-json)
   :serial t
   :components
   ((:file "package")
