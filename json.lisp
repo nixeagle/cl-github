@@ -39,7 +39,7 @@
 ;;; OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 ;;; WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-(in-package :nisp.github)
+(in-package :cl-github)
 
 ;;; From Alexandria
 (defun alist-hash-table (alist &rest hash-table-initargs)
@@ -66,6 +66,14 @@ ALIST. Hash table is initialized using the HASH-TABLE-INITARGS."
                     :test #'equal)
   "mapping of class strings to real classes.")
 
+
+(defvar *current-prototype* nil
+  "Stores the key of an object until its stored in `*PREVIOUS-PROTOTYPE*'.")
+(defvar *previous-prototype* nil
+  "Stores the prototype of the json class above the current one.
+
+For example: {\"user\":{\"plan\":{\"name\":....}}}
+When parsing the plan json object, this will be set to \"USER\".")
 
 (defun beginning-of-object ()
   "Do more at prototype init"
@@ -195,7 +203,7 @@ Otherwise, create a FLUID-OBJECT with slots interned in
 
 (defgeneric to-json (object)
   (:method :around (obj)
-           (let ((json:*json-symbols-package* :nisp.github))
+           (let ((json:*json-symbols-package* :cl-github))
              (with-local-class-registry (:inherit nil)
                (call-next-method)))))
 (defmethod to-json ((obj string))
@@ -242,8 +250,8 @@ Otherwise, create a FLUID-OBJECT with slots interned in
                class))
 
 (defmethod json->class :around (object class)
-  "Set package to nisp.github and use local class registry."
-  (let ((json:*json-symbols-package* :nisp.github))
+  "Set package to cl-github and use local class registry."
+  (let ((json:*json-symbols-package* :cl-github))
     (with-local-class-registry (:inherit nil)
       (call-next-method))))
 

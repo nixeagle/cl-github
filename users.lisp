@@ -1,4 +1,4 @@
-(in-package :nisp.github)
+(in-package :cl-github)
 
 
 (defclass contact-data ()

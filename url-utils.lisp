@@ -31,7 +31,7 @@
 ;;; Some modifications have been made by Nixeagle Copyright (c) 2010.
 ;;; Permission is granted to use under the original license (see above).
 
-(in-package :nisp.github)
+(in-package :cl-github)
 
 (defmacro upgrade-vector (vector new-type &key converter)
   "Returns a vector with the same length and the same elements as

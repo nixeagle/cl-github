@@ -1,4 +1,4 @@
-(in-package :nisp.github)
+(in-package :cl-github)
 
 (defparameter +github-api-url+ "http://github.com/api/v2/json"
   ;; Use only the json interface, we do not want to implement the xml or
@@ -17,13 +17,6 @@ This is the same for every call.")
 (defvar *default-token* ""
   "Default token to use when possible.")
 
-(defvar *current-prototype* nil
-  "Stores the key of an object until its stored in `*PREVIOUS-PROTOTYPE*'.")
-(defvar *previous-prototype* nil
-  "Stores the prototype of the json class above the current one.
-
-For example: {\"user\":{\"plan\":{\"name\":....}}}
-When parsing the plan json object, this will be set to \"USER\".")
 
 (defmacro with-github-content-types (&body body)
   "Evaluate BODY treating application/json as text."
@@ -158,10 +151,10 @@ When parsing the plan json object, this will be set to \"USER\".")
                   :want-string t))
 
 
-(defpackage #:nisp.github-extra
-  (:use :cl :iterate :nisp.github)
+(defpackage #:cl-github-extra 
+  (:use :cl :iterate :cl-github)
   (:export #:show-followers-not-followed))
-(in-package :nisp.github-extra)
+(in-package :cl-github-extra)
 ;;; Extra
 (defun show-followers-not-followed (username)
   "Show followers that USERNAME is not following."

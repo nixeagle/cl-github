@@ -1,4 +1,4 @@
-(in-package :nisp.github)
+(in-package :cl-github)
 
 ;;; Network API
 (defgeneric show-network-meta (username repository &key login token)

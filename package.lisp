@@ -1,6 +1,6 @@
-(in-package :nisp.github-system)
+(in-package :cl-github-system)
 
-(defpackage #:nisp.github
+(defpackage #:cl-github
   (:use :cl :json :iterate)
   (:export
 
@@ -51,4 +51,4 @@
    #:add-comment
    ))
 
-(in-package :nisp.github)
+(in-package :cl-github)

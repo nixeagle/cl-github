@@ -1,4 +1,4 @@
-(in-package :nisp.github)
+(in-package :cl-github)
 
 (defclass repository ()
   (description forks url homepage watchers fork open-issues private name owner))
