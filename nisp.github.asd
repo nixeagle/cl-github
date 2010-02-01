@@ -20,6 +20,7 @@
   ((:file "package")
    (:file "url-utils")
    (:file "users")
+   (:file "repositories")
    (:file "issues")
    (:file "json")
    (:file "github")

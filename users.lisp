@@ -72,21 +72,6 @@
   ;; Github seems to ignore this request.
   (json->list (authed-request login token `("user" "unfollow" ,username))))
 
-(defgeneric watch (username repository &key login token)
-  (:documentation "Watch REPOSITORY owned by USERNAME."))
-(defgeneric unwatch (username repository &key login token)
-  (:documentation "Stop watching REPOSITORY owned by USERNAME."))
-(defgeneric watched-repositories (username)
-  (:documentation "List repositories USERNAME watches."))
-
-(defmethod watch ((username string) (repository string) &key login token)
-  (to-json (request login token `("repos" "watch" ,username ,repository))))
-(defmethod unwatch ((username string) (repository string) &key login token)
-  (to-json (authed-request login token `("repos" "unwatch" ,username ,repository))))
-(defmethod watched-repositories ((username string))
-  (to-json (github-simple-request "repos" "watched" username)))
-
-
 ;;; User public key management.
 (defgeneric user-keys (&key login token)
   (:documentation "List all public keys LOGIN uses."))
