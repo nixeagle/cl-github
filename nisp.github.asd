@@ -21,4 +21,5 @@
    (:file "url-utils")
    (:file "users")
    (:file "json")
+   (:file "issues")
    (:file "github")))
