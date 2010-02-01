@@ -32,6 +32,18 @@ comfortable with maintaining.
   object or they return a list of objects. In some extremely simple
   cases, we return lists of strings or lists of other non CLOS objects.
 
+*** Quick start
+    Set the default login info in the repl. Doing this means you won't
+    have to pass a token and login to each function call.
+    : (setq clithub:*default-login* "name" 
+    :       clithub:*default-token* "apikey")
+
+    Then try a simple call like:
+    : (clithub:show-followers "your login")
+
+    See the documentation strings for information on all of the
+    functions.
+
 * Testing
   This is known to work on sbcl 1.0.34, however this library is not
   using any sbcl specific features. Anything that can run drakma,

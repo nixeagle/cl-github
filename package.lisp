@@ -5,6 +5,9 @@
   (:nicknames :nisp.github :github)
   (:export
 
+   :*default-login*
+   :*default-token*
+   
    ;; Following people related.
    #:show-followers
    #:show-following
