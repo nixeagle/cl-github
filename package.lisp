@@ -2,6 +2,7 @@
 
 (defpackage #:cl-github
   (:use :cl :json :iterate)
+  (:nicknames :nisp.github :github)
   (:export
 
    ;; Following people related.
@@ -18,7 +19,7 @@
    ;; User Emails
    #:user-emails
    #:add-user-email
-   #:remove-uer-email
+   #:remove-user-email
 
    ;; User keys
    #:user-keys
