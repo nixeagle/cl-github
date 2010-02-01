@@ -195,7 +195,7 @@ slots."))
   (name size sha data mode mime-type)
   (:documentation "Git blob that we get from github."))
 
-(defclass tree ()
+(defclass treeish ()
   (name sha mode type) 
   (:documentation "Treeish git object that we get from github."))
 
