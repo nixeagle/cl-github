@@ -98,25 +98,6 @@ When parsing the plan json object, this will be set to \"USER\".")
 ;;; Class related generics.
 
 ;;; JSON classes
-(defclass user ()
-  (plan gravatar-id name company location created-at
-        collaborators disk-usage
-        public-gist-count public-repo-count
-        blog following-count id private-gist-count
-        owned-private-repo-count total-private-repo-count
-        followers-count login email))
-
-(defclass plan ()
-  (name collaborators space private-repos))
-
-(defclass network-meta-user ()
-  (name repo heads)
-  (:documentation "User object returned from github's Network API."))
-
-(defclass users (network-meta-user)
-  (name location followers username language fullname
-        repos id type pushed score created)
-  (:documentation "Describes a github user search result."))
 
 (defclass repository ()
   (description forks url homepage watchers fork open-issues private name owner))
@@ -223,56 +204,39 @@ slots."))
 ;;; API calls
 (defgeneric set-repository-private (repository &key login token)
   (:documentation "Mark REPOSITORY as private on github."))
-(defgeneric unfollow-user (user-login pass username)
-  (:documentation "Unfollow USERNAME using USER-LOGIN."))
+
 (defgeneric show-repository (username reponame &key login token)
   (:documentation "Show information on USERNAME's REPONAME."))
-(defgeneric add-user-email (email &key login token)
-  (:documentation "Add EMAIL to LOGIN's email list."))
-(defgeneric remove-user-key (id &key login token)
-  (:documentation "REMOVE KEY by ID from LOGIN's key list.
 
-ID can be either a string or a positive number."))
-(defgeneric show-followers (username)
-  (:documentation "List all followers of USERNAME."))
+
+
+
 (defgeneric deply-keys (repository &key login token)
   (:documentation "List REPOSITORY's deploy keys.
 
 These are basically read only ssh keys."))
-(defgeneric show-following (username)
-  (:documentation "List all users that USERNAME follows."))
 (defgeneric show-commits (username repository branch &key file login token)
   (:documentation "List commits in USERNAME's REPOSITORY on BRANCH optionally for FILE."))
 (defgeneric show-branches (username repository &key login token)
   (:documentation "List REPOSITORY's remote branches."))
 (defgeneric add-deploy-key (repository title key &key login token)
   (:documentation "Add KEY named TITLE as a deploy key for REPOSITORY."))
-(defgeneric watch (username repository &key login token)
-  (:documentation "Watch REPOSITORY owned by USERNAME."))
+
 (defgeneric delete-repository (repository &key login token)
   (:documentation "Delete REPOSITORY on github."))
-(defgeneric watch-repository (username repository)
-  (:documentation "Watch REPOSITORY owned by USERNAME."))
 (defgeneric repository-network (username repository)
   (:documentation "Look at network of USERNAME's REPOSITORY."))
 (defgeneric show-commit (username repository sha &key login token)
   (:documentation "Show data for commit identified by SHA on USERNAME's REPOSITORY."))
-(defgeneric user-emails (&key login token)
-  (:documentation "List all emails LOGIN uses."))
+
 (defgeneric show-tags (username repository &key login token)
   (:documentation "List REPOSITORY's tags."))
-(defgeneric search-users (username)
-  (:documentation "Search github for USERNAME."))
 (defgeneric json->class (object class)
   (:documentation "Store json in OBJECT to CLASS"))
-(defgeneric remove-user-email (email &key login token)
-  (:documentation "Remove EMAIL from LOGIN's email list."))
 (defgeneric branches (object)
   (:documentation "NIL"))
 (defgeneric fork-repository (username repository)
   (:documentation "Fork REPOSITORY owned by USERNAME."))
-(defgeneric unfollow (username &key login token)
-  (:documentation "Unfollow USERNAME using LOGIN."))
 (defgeneric fork (username repository &key login token)
   (:documentation "Fork REPOSITORY owned by USERNAME."))
 (defgeneric show-network (username repository &key login token)
@@ -280,10 +244,6 @@ These are basically read only ssh keys."))
 (defgeneric create-repository (repository &key login token description
                                           homepage public)
   (:documentation "Create new REPOSITORY on github."))
-(defgeneric user-keys (&key login token)
-  (:documentation "List all public keys LOGIN uses."))
-(defgeneric add-user-key (name key &key login token)
-  (:documentation "Add KEY to LOGIN's key list."))
 (defgeneric remove-collaborator (username repository &key login token)
   (:documentation "Remove USERNAME from the collaborators list of REPOSITORY."))
 (defgeneric set-prototype (key)
@@ -292,82 +252,19 @@ These are basically read only ssh keys."))
   (:documentation "NIL"))
 (defgeneric show-collaborators (username repository &key login token)
   (:documentation "List collaborators on REPOSITORY owned by USERNAME."))
-(defgeneric follow-user (username &key login token)
-  (:documentation "Follow USERNAME using USER-LOGIN."))
 (defgeneric search-repositories (search-string)
   (:documentation "Search github repositories for SEARCH-STRING."))
 (defgeneric add-collaborator (username repository &key login token)
   (:documentation "Add USERNAME to the collaborators list of REPOSITORY."))
-(defgeneric unwatch-repository (username repository)
-  (:documentation "Stop watching REPOSITORY owned by USERNAME."))
-(defgeneric watched-repositories (username)
-  (:documentation "List repositories USERNAME watches."))
 (defgeneric remove-deploy-key (repository id &key login token)
   (:documentation "Remove key identified by ID as a deploy key for REPOSITORY."))
-(defgeneric follow (username &key login token)
-  (:documentation "Follow USERNAME using USER-LOGIN."))
 (defgeneric show-languages (username repository &key login token)
   (:documentation "List REPOSITORY's languages."))
-(defgeneric show-user (user &key login token name blog email company location)
-  (:documentation "NIL"))
-(defgeneric unwatch (username repository &key login token)
-  (:documentation "Stop watching REPOSITORY owned by USERNAME."))
 (defgeneric set-repository-public (repository &key login token)
   (:documentation "Mark REPOSITORY as public on github."))
 (defgeneric user-repositories (username)
   (:documentation "List USERNAME's repositories."))
 
-
-
-(defmethod show-user ((user string)
-                      &key login token name blog email company location)
-  ;; Not going to export this right now, I want to make this more lisp
-  ;; like by using setf.
-  (to-json (github-request :parameters `("user" "show" ,user)
-                           :auth (when (string= user *default-login*)
-                                   :force)
-                           :login login
-                           :token token
-                           :values\[blog\] blog
-                           :values\[name\] name
-                           :values\[email\] email
-                           :values\[company\] company
-                           :values\[location\] location)))
-
-(defmethod show-followers ((username string))
-  (json->list (github-simple-request "user" "show" username "followers")))
-
-(defmethod show-following ((username string))
-  (json->list (github-simple-request "user" "show" username "following")))
-
-(defmethod follow ((username string) &key login token)
-  (json->list (authed-request login token `("user" "follow" ,username))))
-               
-(defmethod unfollow ((username string) &key login token)
-  ;; Github seems to ignore this request.
-  (json->list (authed-request login token `("user" "unfollow" ,username))))
-
-(defmethod user-emails (&key login token)
-  (json->list (authed-request login token '("user" "emails"))))
-
-(defmethod add-user-email ((email string) &key login token)
-  (json->list (authed-request login token '("user" "email" "add")
-                              :email email)))
-
-(defmethod remove-user-email ((email string) &key login token)
-  (json->list (authed-request login token '("user" "email" "remove")
-                              :email email)))
-
-(defmethod user-keys (&key login token)
-  (to-json (authed-request login token '("user" "keys"))))
-
-(defmethod add-user-key ((name string) (key string) &key login token)
-  (to-json (authed-request login token '("user" "key" "add")
-                           :name name :key key)))
-
-(defmethod remove-user-key ((id string) &key login token)
-  (to-json (authed-request login token '("user" "key" "remove")
-                           :id (princ-to-string id))))
 
 (defmethod deploy-keys ((repository string) &key login token)
   (to-json (authed-request login token `("repos" "keys" ,repository))))
@@ -376,15 +273,13 @@ These are basically read only ssh keys."))
                            (key string) &key login token)
   (to-json (authed-request login token `("repos" "key" ,repository "add")
                            :title title :key key)))
-
 (defmethod remove-deploy-key ((repository string) (id string) &key login token)
   (to-json (authed-request login token `("repos" "key" ,repository "remove")
                            :id id)))
 (defmethod remove-deploy-key ((repository string) (id integer) &key login token)
   (remove-deploy-key repository (princ-to-string id) :login login :token token))
 
-(defmethod watched-repositories ((username string))
-  (to-json (github-simple-request "repos" "watched" username)))
+
 
 ;;; Repositories
 (defmethod search-repositories ((search-string string))
@@ -396,11 +291,6 @@ These are basically read only ssh keys."))
 (defmethod user-repositories ((username string))
   (to-json (github-simple-request "repos" "show" username)))
 
-(defmethod watch ((username string) (repository string) &key login token)
-  (to-json (request login token `("repos" "watch" ,username ,repository))))
-
-(defmethod unwatch ((username string) (repository string) &key login token)
-  (to-json (authed-request login token `("repos" "unwatch" ,username ,repository))))
 
 (defmethod fork ((username string) (repository string) &key login token)
   (to-json (authed-request login token `("repos" "fork" ,username ,repository))))
@@ -427,8 +317,7 @@ These are basically read only ssh keys."))
 (defmethod set-repository-public ((repository string) &key login token)
   (to-json (authed-request login token `("repos" "set" "public" ,repository))))
 
-(defmethod search-users ((username string))
-  (to-json (github-simple-request "user" "search" username)))
+
 
 (defmethod show-collaborators ((username string) (repository string)
                                &key login token)

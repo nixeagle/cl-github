@@ -20,8 +20,8 @@
   ((:file "package")
    (:file "url-utils")
    (:file "users")
-   (:file "json")
    (:file "issues")
+   (:file "json")
    (:file "github")
    (:file "network")))                    ;Needs COMMITS and USERS.
 
