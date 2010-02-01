@@ -34,6 +34,10 @@
    ;; Show commit info
    #:show-commit
 
+   #:show-languages
+   #:show-tags
+   #:show-branches
+
    ;; Github issues tracker.
    #:search-issues
    #:show-issues
