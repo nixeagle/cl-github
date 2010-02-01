@@ -64,5 +64,5 @@ Table of Contents
 4 Bugs 
 ~~~~~~~
   Please report all bugs to github's tracker, found at
-  [http://github.com/nixeagle/nisp/issues].
+  [http://github.com/nixeagle/cl-github/issues].
 
