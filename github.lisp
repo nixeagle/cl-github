@@ -70,7 +70,6 @@ When parsing the plan json object, this will be set to \"USER\".")
   (apply #'github-request :login login :token token :auth :force 
          :parameters uri-parameters args))
 
-
 (defun github-simple-request (&rest parameters)
   "Ask github about PARAMETERS."
   (github-request :parameters parameters))
@@ -99,39 +98,6 @@ When parsing the plan json object, this will be set to \"USER\".")
 
 ;;; JSON classes
 
-
-
-(defclass parent ()
-  (id)
-  ;; Yes this is a little strange... but this is how github does it, it
-  ;; can be cleaned up later.
-  (:documentation "The id for the parent commit."))
-
-(defclass network-data-commit ()
-  (message time parents date author id space gravatar login)
-  (:documentation "We get commit data like this from the Network API."))
-
-(defclass commits (network-data-commit)
-  (author authored-date committed-date committer
-          id message parents tree url)
-  (:documentation "A commit object."))
-
-(defclass commit ()
-  (added modified removed parents author url id committed-date
-         authored-date message tree committer)
-  (:documentation "Detailed information on a commit."))
-
-(defclass file-diff ()
-  (diff filename)
-  (:documentation "Modification information for a commit."))
-
-(defclass public-key ()
-  (title id key)
-  (:documentation "Information on a public key."))
-
-(defclass delete-token ()
-  ((delete-token :reader delete-token))
-  (:documentation "Token github gives us to confirm deletion."))
 
 (defclass status ()
   (status)
@@ -169,40 +135,6 @@ When parsing the plan json object, this will be set to \"USER\".")
           (error "Not done!")))
 
 ;;; API calls
-(defgeneric show-commits (username repository branch &key file login token)
-  (:documentation "List commits in USERNAME's REPOSITORY on BRANCH optionally for FILE."))
-
-(defgeneric repository-network (username repository)
-  (:documentation "Look at network of USERNAME's REPOSITORY."))
-(defgeneric show-commit (username repository sha &key login token)
-  (:documentation "Show data for commit identified by SHA on USERNAME's REPOSITORY."))
-
-(defgeneric json->class (object class)
-  (:documentation "Store json in OBJECT to CLASS"))
-(defgeneric show-network (username repository &key login token)
-  (:documentation "Show at network of USERNAME's REPOSITORY."))
-(defgeneric set-prototype (key)
-  (:documentation "Make KEY the json `*PROTOTYPE*'."))
-
-
-
-
-
-;;; Repositories
-
-(defmethod show-network ((username string) (repository string) &key login token)
-  (to-json (authed-request login token `("repos" "show" ,username
-                                                 ,repository "network"))))
-
-
-(defmethod show-commits ((username string) (repository string) (branch string)
-                         &key file login token)
-  (to-json (request login token `("commits" "list" ,username
-                                            ,repository ,branch ,file))))
-
-(defmethod show-commit ((username string) (repository string) (sha string)
-                        &key login token)
-  (to-json (request login token `("commits" "show" ,username ,repository ,sha))))
 
 ;;; Object API
 (defgeneric show-tree (username repository tree &key login token)
@@ -219,14 +151,11 @@ When parsing the plan json object, this will be set to \"USER\".")
 (defmethod show-blob ((username string) (repository string)
                       (path string) (tree string) &key login token)
   (to-json (request login token `("blob" "show" ,username ,repository ,tree ,path))))
-
 (defmethod show-raw-blob ((username string) (repository string)
                           (sha string) &key login token)
   (github-request :login login :token token :auth :default
                   :parameters `("blob" "show" ,username ,repository ,sha)
                   :want-string t))
-
-
 
 
 (defpackage #:nisp.github-extra

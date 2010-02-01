@@ -36,6 +36,39 @@ slots."))
   (:documentation "A network is just another name for repositories."))
 
 
+(defclass network-data-commit ()
+  (message time parents date author id space gravatar login)
+  (:documentation "We get commit data like this from the Network API."))
+
+(defclass commits (network-data-commit)
+  (author authored-date committed-date committer
+          id message parents tree url)
+  (:documentation "A commit object."))
+
+(defclass commit ()
+  (added modified removed parents author url id committed-date
+         authored-date message tree committer)
+  (:documentation "Detailed information on a commit."))
+
+(defclass parent ()
+  (id)
+  ;; Yes this is a little strange... but this is how github does it, it
+  ;; can be cleaned up later.
+  (:documentation "The id for the parent commit."))
+
+
+(defclass file-diff ()
+  (diff filename)
+  (:documentation "Modification information for a commit."))
+
+(defclass public-key ()
+  (title id key)
+  (:documentation "Information on a public key."))
+
+(defclass delete-token ()
+  ((delete-token :reader delete-token))
+  (:documentation "Token github gives us to confirm deletion."))
+
 ;;; Repository meta information stuff
 (defgeneric search-repositories (search-string)
   (:documentation "Search github repositories for SEARCH-STRING."))
@@ -177,3 +210,33 @@ These are basically read only ssh keys."))
 (defmethod show-branches ((username string) (repository string) &key login token)
   (json->list
    (request login token `("repos" "show" ,username ,repository "branches"))))
+
+
+
+(defgeneric show-commits (username repository branch &key file login token)
+  (:documentation "List commits in USERNAME's REPOSITORY on BRANCH optionally for FILE."))
+
+(defgeneric repository-network (username repository)
+  (:documentation "Look at network of USERNAME's REPOSITORY."))
+(defgeneric show-commit (username repository sha &key login token)
+  (:documentation "Show data for commit identified by SHA on USERNAME's REPOSITORY."))
+
+(defgeneric show-network (username repository &key login token)
+  (:documentation "Show at network of USERNAME's REPOSITORY."))
+
+
+;;; Repositories
+
+(defmethod show-network ((username string) (repository string) &key login token)
+  (to-json (authed-request login token `("repos" "show" ,username
+                                                 ,repository "network"))))
+
+
+(defmethod show-commits ((username string) (repository string) (branch string)
+                         &key file login token)
+  (to-json (request login token `("commits" "list" ,username
+                                            ,repository ,branch ,file))))
+
+(defmethod show-commit ((username string) (repository string) (sha string)
+                        &key login token)
+  (to-json (request login token `("commits" "show" ,username ,repository ,sha))))

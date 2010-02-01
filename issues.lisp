@@ -39,9 +39,9 @@ original TITLE and BODY."))
   (comment status)
   (:documentation "Comment on a github issue."))
 
-
 (deftype valid-issue-state ()
   "Github issues have two valid states."
+  ;; This is not actually used at this time.
   '(member :open :closed))
 
 (defmethod search-issues ((username string) (repository string)
