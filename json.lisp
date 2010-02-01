@@ -39,7 +39,7 @@
 ;;; OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 ;;; WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-(in-package :cl-github)
+(in-package :clithub)
 
 ;;; From Alexandria
 (defun alist-hash-table (alist &rest hash-table-initargs)
@@ -203,7 +203,7 @@ Otherwise, create a FLUID-OBJECT with slots interned in
 
 (defgeneric to-json (object)
   (:method :around (obj)
-           (let ((json:*json-symbols-package* :cl-github))
+           (let ((json:*json-symbols-package* :clithub))
              (with-local-class-registry (:inherit nil)
                (call-next-method)))))
 (defmethod to-json ((obj string))
@@ -250,8 +250,8 @@ Otherwise, create a FLUID-OBJECT with slots interned in
                class))
 
 (defmethod json->class :around (object class)
-  "Set package to cl-github and use local class registry."
-  (let ((json:*json-symbols-package* :cl-github))
+  "Set package to clithub and use local class registry."
+  (let ((json:*json-symbols-package* :clithub))
     (with-local-class-registry (:inherit nil)
       (call-next-method))))
 

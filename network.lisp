@@ -1,4 +1,4 @@
-(in-package :cl-github)
+(in-package :clithub)
 
 ;;; Network API
 (defgeneric show-network-meta (username repository &key login token)

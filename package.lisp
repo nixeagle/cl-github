@@ -1,6 +1,6 @@
-(in-package :cl-github-system)
+(in-package :clithub-system)
 
-(defpackage #:cl-github
+(defpackage #:clithub
   (:use :cl :json :iterate)
   (:nicknames :nisp.github :github)
   (:export
@@ -52,4 +52,4 @@
    #:add-comment
    ))
 
-(in-package :cl-github)
+(in-package :clithub)

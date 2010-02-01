@@ -1,4 +1,4 @@
-(in-package :cl-github)
+(in-package :clithub)
 
 (defclass repository ()
   (description forks url homepage watchers fork open-issues private name owner))
