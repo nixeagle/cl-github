@@ -1,3 +1,7 @@
+;;; This File is from hunchentoot from http://weitz.de/hunchentoot
+;;; in the file hunchentoot/util.lisp
+;;; Please see below the license for details on modifications I have made.
+
 ;;; Copyright (c) 2004-2010, Dr. Edmund Weitz. All rights reserved.
 
 ;;; Redistribution and use in source and binary forms, with or without
