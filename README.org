@@ -35,11 +35,11 @@ comfortable with maintaining.
 *** Quick start
     Set the default login info in the repl. Doing this means you won't
     have to pass a token and login to each function call.
-    : (setq clithub:*default-login* "name" 
-    :       clithub:*default-token* "apikey")
+    : (setq cl-github:*default-login* "name" 
+    :       cl-github:*default-token* "apikey")
 
     Then try a simple call like:
-    : (clithub:show-followers "your login")
+    : (cl-github:show-followers "your login")
 
     See the documentation strings for information on all of the
     functions.

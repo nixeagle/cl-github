@@ -1,4 +1,4 @@
-(in-package :clithub)
+(in-package :cl-github)
 
 (defparameter +github-api-url+ "http://github.com/api/v2/json"
   ;; Use only the json interface, we do not want to implement the xml or
@@ -151,10 +151,10 @@ This is the same for every call.")
                   :want-string t))
 
 
-(defpackage #:clithub-extra 
-  (:use :cl :iterate :clithub)
+(defpackage #:cl-github-extra 
+  (:use :cl :iterate :cl-github)
   (:export #:show-followers-not-followed))
-(in-package :clithub-extra)
+(in-package :cl-github-extra)
 ;;; Extra
 (defun show-followers-not-followed (username)
   "Show followers that USERNAME is not following."

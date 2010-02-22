@@ -1,11 +1,11 @@
 (in-package :cl-user)
-(defpackage #:clithub-system
+(defpackage #:cl-github-system
   (:use :cl :asdf)
   (:nicknames :nisp.github-system))
-(in-package :clithub-system)
+(in-package :cl-github-system)
 
 
-(defsystem :clithub
+(defsystem :cl-github
   :version "0.2.0"
   :license "BSD"
   :depends-on (:iterate :drakma :cl-json)

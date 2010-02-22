@@ -1,4 +1,4 @@
-(in-package :clithub)
+(in-package :cl-github)
 
 
 (defclass contact-data ()

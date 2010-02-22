@@ -1,4 +1,4 @@
-(in-package :clithub)
+(in-package :cl-github)
 
 ;;; Issues API
 (defgeneric search-issues (username repository state term &key login token)
