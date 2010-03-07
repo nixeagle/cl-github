@@ -3,7 +3,7 @@
 (defclass repository ()
   (description forks url homepage watchers fork open-issues private name owner))
 
-(defclass watched-repository () 
+(defclass watched-repository (repository)
   (description forks url homepage watchers fork open-issues
                private name owner)
   ;; currently used only for WATCHED-REPOSITORIES.
