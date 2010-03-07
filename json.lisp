@@ -5,21 +5,21 @@
 ;;; My modifications are pretty extensive, but for completeness:
 ;;;
 ;;; Specifically
-;;; -  beginning-of-object 
-;;; -  key-add-or-set 
+;;; -  beginning-of-object
+;;; -  key-add-or-set
 ;;; -  value-add-or-set
-;;; -  accumulator-get-object 
+;;; -  accumulator-get-object
 ;;; -  accumulator-add-preserved-key
 ;;; Are especially derived from CL-JSON.
 ;;;
 ;;; CL-JSON's license is included here for completeness.
-;;; 
-;;; (This is the MIT / X Consortium license as taken from 
+;;;
+;;; (This is the MIT / X Consortium license as taken from
 ;;;  http://www.opensource.org/licenses/mit-license.html)
-;;; 
+;;;
 ;;; Copyright (c) 2006-2008 Henrik Hjelte
 ;;; Copyright (c) 2008 Hans Hübner (code from the program YASON)
-;;; 
+;;;
 ;;; Permission is hereby granted, free of charge, to any person obtaining
 ;;; a copy of this software and associated documentation files (the
 ;;; "Software"), to deal in the Software without restriction, including
@@ -27,10 +27,10 @@
 ;;; distribute, sublicense, and/or sell copies of the Software, and to
 ;;; permit persons to whom the Software is furnished to do so, subject to
 ;;; the following conditions:
-;;; 
+;;;
 ;;; The above copyright notice and this permission notice shall be
 ;;; included in all copies or substantial portions of the Software.
-;;; 
+;;;
 ;;; THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 ;;; EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 ;;; MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -139,7 +139,7 @@ the package wherein to intern slot names from the prototype.
 Otherwise, create a FLUID-OBJECT with slots interned in
 *JSON-SYMBOLS-PACKAGE*."))
 
-;;; Modified from cl-json 
+;;; Modified from cl-json
 (defmethod accumulator-get-object ()
   (flet ((intern-keys (bindings)
            (loop for (key . value) in bindings
@@ -170,10 +170,10 @@ Otherwise, create a FLUID-OBJECT with slots interned in
 (defmacro with-github-decoder (&body body)
   "Execute BODY with decoder bindings appropriate for github's api."
   `(json:bind-custom-vars
-      (:beginning-of-object #'beginning-of-object 
-                            :object-key #'key-add-or-set 
+      (:beginning-of-object #'beginning-of-object
+                            :object-key #'key-add-or-set
                             :object-value #'value-add-or-set
-                            :end-of-object #'accumulator-get-object 
+                            :end-of-object #'accumulator-get-object
                             :object-scope '(json:*INTERNAL-DECODER*
                                             *current-prototype*
                                             *previous-prototype*))
@@ -203,11 +203,12 @@ Otherwise, create a FLUID-OBJECT with slots interned in
 
 (defgeneric to-json (object)
   (:method :around (obj)
-           (let ((json:*json-symbols-package* :cl-github))
+           (let ((json:*json-symbols-package* :cl-github)
+                 (*package* (find-package :cl-github)))
              (with-local-class-registry (:inherit nil)
                (call-next-method)))))
 (defmethod to-json ((obj string))
-  (with-github-decoder 
+  (with-github-decoder
     (json:decode-json-from-string obj)))
 (defmethod to-json ((obj stream))
   "Read directly from a stream and close the stream when done."
