@@ -13,6 +13,13 @@
 (defgeneric repository-private-p (repository))
 (defgeneric repository-watchers-count (repository))
 (defgeneric repository-watchers (repository))
+(defgeneric github-repository-notation (repository))
+(defgeneric parse-github-repository-notation (string)
+  (:documentation "Return a list pair with (\"owner\" \"repository\")")
+  (:method ((string string))
+    ;; Assume only one /, and no garbage input (like trailing spaces).
+    (list  (subseq string 0 (position #\/ string))
+           (subseq string (1+ (position #\/ string))))))
 (defgeneric github-url (object)
   (:documentation "string representation of OBJECT's resource location."))
 (defgeneric github-git-url (object)

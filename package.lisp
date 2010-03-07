@@ -7,13 +7,16 @@
 
    :*default-login*
    :*default-token*
-   
+   ;; Helper/utils
+   #:github-repository-notation
+   #:parse-github-repository-notation
+
    ;; Following people related.
    #:show-followers
    #:show-following
    #:follow
    #:unfollow                           ;currently not working github side.
-   
+
    ;; Project collaborators
    #:show-collaborators
    #:add-collaborator
