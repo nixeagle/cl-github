@@ -53,6 +53,18 @@
    #:remove-label
    #:show-labels
    #:add-comment
+
+   ;; repositories
+   #:repository-name
+   #:repository-owner
+   #:repository-description
+   #:repository-url
+   #:repository-open-issues-count
+   #:repository-fork-p
+   #:repository-forks-count
+   #:repository-private-p
+   #:repository-watchers-count
+
    ))
 
 (in-package :cl-github)
