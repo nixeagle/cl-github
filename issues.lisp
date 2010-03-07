@@ -7,6 +7,7 @@
   (:documentation "Show all issues with STATE on USERNAME's REPOSITORY."))
 (defgeneric show-issue (username repository issue &key login token)
   (:documentation "Show ISSUE on USERNAME's REPOSITORY."))
+(defgeneric show-issue-comments (username repository issue &key login token))
 (defgeneric open-issue (username repository title body &key login token)
   (:documentation "Open issue about TITLE with BODY on USERNAME's REPOSITORY."))
 (defgeneric close-issue (username repository issue &key login token)
@@ -39,6 +40,13 @@ original TITLE and BODY."))
   (comment status)
   (:documentation "Comment on a github issue."))
 
+(defclass issue-comment ()
+  ((body :reader issue-comment-body)
+   (created-at :reader issue-comment-created-at)
+   (id :reader issue-comment-id)
+   (updated-at :reader issue-comment-updated-at)
+   (user :reader issue-comment-user)))
+
 (deftype valid-issue-state ()
   "Github issues have two valid states."
   ;; This is not actually used at this time.
@@ -62,6 +70,15 @@ original TITLE and BODY."))
                        (issue integer) &key login token)
   (show-issue username repository (princ-to-string issue)
                 :login login :token token))
+
+(defmethod show-issue-comments ((username string) (repository string)
+                                (issue string) &key login token)
+  (to-json (request login token `("issues" "comments" ,username ,repository
+                                           ,issue))))
+(defmethod show-issue-comments ((username string) (repository string)
+                                (issue integer) &key login token)
+  (show-issue-comments username repository (princ-to-string issue)
+                       :login login :token token)))
 
 (defmethod open-issue ((username string) (repository string)
                        (title string) (body string)
@@ -94,14 +111,14 @@ original TITLE and BODY."))
                 :login login :token token))
 
 (defmethod edit-issue ((username string) (repository string)
-                       (issue string) (title string) (body string) 
+                       (issue string) (title string) (body string)
                        &key login token)
   (to-json (authed-request login token `("issues" "edit" ,username
                                                   ,repository ,issue)
                            :title title :body body)))
 
 (defmethod edit-issue ((username string) (repository string)
-                       (issue integer) (title string) (body string) 
+                       (issue integer) (title string) (body string)
                        &key login token)
   (edit-issue username repository (princ-to-string issue) title body
               :login login :token token))
@@ -126,7 +143,7 @@ original TITLE and BODY."))
               :login login :token token))
 
 (defmethod remove-label ((username string) (repository string)
-                         (issue string) (label string) 
+                         (issue string) (label string)
                          &key login token)
   (json->list (authed-request login token
                               `("issues" "label" "remove"
@@ -140,7 +157,7 @@ original TITLE and BODY."))
               :login login :token token))
 
 (defmethod add-comment ((username string) (repository string)
-                        (issue string) (comment string) 
+                        (issue string) (comment string)
                         &key login token)
   (to-json (authed-request login token `("issues" "comment" ,username
                                                   ,repository ,issue)
