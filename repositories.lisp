@@ -255,7 +255,7 @@ These are basically read only ssh keys."))
 
 
 
-(defgeneric show-commits (username repository branch &key file login token)
+(defgeneric show-commits (username repository &key branch file login token)
   (:documentation "List commits in USERNAME's REPOSITORY on BRANCH optionally for FILE."))
 
 (defgeneric repository-network (username repository)
@@ -274,10 +274,12 @@ These are basically read only ssh keys."))
                                                  ,repository "network"))))
 
 
-(defmethod show-commits ((username string) (repository string) (branch string)
-                         &key file login token)
+(defmethod show-commits ((username string) (repository string)
+                         &key branch file login token)
   (to-json (request login token `("commits" "list" ,username
-                                            ,repository ,branch ,file))))
+                                            ,repository ,(or branch "master") ,file))))
+
+
 
 (defmethod show-commit ((username string) (repository string) (sha string)
                         &key login token)
