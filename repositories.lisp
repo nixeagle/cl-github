@@ -1,5 +1,11 @@
 (in-package :cl-github)
 
+(defgeneric repository-name (repository)
+  (:documentation "string representation of REPOSITORY."))
+(defgeneric github-url (object)
+  (:documentation "string representation of OBJECT's resource location."))
+(defgeneric github-git-url (object)
+  (:documentation "string representation of OBJECT's git location."))
 (defclass repository ()
   (description forks url homepage watchers fork open-issues private name owner))
 
@@ -8,12 +14,19 @@
                private name owner)
   ;; currently used only for WATCHED-REPOSITORIES.
   (:documentation "Repository information."))
+(defmethod repository-name ((repo repository))
+  (slot-value repo 'name))
+(defmethod github-url ((repo repository))
+  (slot-value repo 'url))
+(defmethod github-git-url ((repo repository))
+  (concatenate 'string "git" (subseq (github-url repo) 4) ".git"))
 
 (defclass searched-repository ()
   (name size followers username language fork id type pushed
         forks description score created)
   (:documentation "Search repository result information."))
-
+(defmethod repository-name ((repo searched-repository))
+  (slot-value repo 'name))
 (defclass repositories (watched-repository searched-repository) ()
   (:documentation "Workaround for cl-json.
 
