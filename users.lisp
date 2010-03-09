@@ -111,3 +111,10 @@ ID can be either a string or a positive number."))
 (defmethod remove-user-email ((email string) &key login token)
   (json->list (authed-request login token '("user" "email" "remove")
                               :email email)))
+
+(defgeneric show-pushable (&key login token))
+
+(defmethod show-pushable (&key login token)
+  (json->list (authed-request login token '("repos" "pushable"))))
+
+;;; END
