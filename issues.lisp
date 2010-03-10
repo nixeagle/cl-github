@@ -78,7 +78,7 @@ original TITLE and BODY."))
 (defmethod show-issue-comments ((username string) (repository string)
                                 (issue integer) &key login token)
   (show-issue-comments username repository (princ-to-string issue)
-                       :login login :token token)))
+                       :login login :token token))
 
 (defmethod open-issue ((username string) (repository string)
                        (title string) (body string)
