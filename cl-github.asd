@@ -8,7 +8,7 @@
 (defsystem :cl-github
   :version "0.2.0"
   :license "BSD"
-  :depends-on (:iterate :drakma :cl-json)
+  :depends-on (:iterate :drakma :cl-json :eos)
   :serial t
   :components
   ((:file "package")
