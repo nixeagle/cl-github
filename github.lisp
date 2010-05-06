@@ -29,7 +29,7 @@ This is the same for every call.")
   (let ((result (apply #'github-simple-request parameters)))
     (prog1 (with-decoder-simple-list-semantics
              (let ((json:*json-symbols-package* :nisp.github))
-               (decode-json result))) 
+               (decode-json result)))
       (close result))))
 
 (defun github-request (&rest args
@@ -60,7 +60,7 @@ This is the same for every call.")
 
 (defun authed-request (login token uri-parameters &rest args &key
                        &allow-other-keys)
-  (apply #'github-request :login login :token token :auth :force 
+  (apply #'github-request :login login :token token :auth :force
          :parameters uri-parameters args))
 
 (defun github-simple-request (&rest parameters)
@@ -101,7 +101,7 @@ This is the same for every call.")
   (:documentation "Git blob that we get from github."))
 
 (defclass treeish ()
-  (name sha mode type) 
+  (name sha mode type)
   (:documentation "Treeish git object that we get from github."))
 
 
@@ -150,8 +150,12 @@ This is the same for every call.")
                   :parameters `("blob" "show" ,username ,repository ,sha)
                   :want-string t))
 
+(defun follow-user (username &key token login)
+  "Follow USERNAME returning the followed username as a string."
+  (declare (string username))
+  (find username (follow username :token token :login login) :test #'equal))
 
-(defpackage #:cl-github-extra 
+(defpackage #:cl-github-extra
   (:use :cl :iterate :cl-github)
   (:export #:show-followers-not-followed))
 (in-package :cl-github-extra)

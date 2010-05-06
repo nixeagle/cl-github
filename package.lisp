@@ -68,6 +68,6 @@
    #:repository-private-p
    #:repository-watchers-count
 
-   ))
+   #:follow-user))
 
 (in-package :cl-github)
